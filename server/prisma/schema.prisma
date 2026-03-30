@@ -1,0 +1,495 @@
+// KINETIC E-Commerce — Badminton & Racket Sports
+// Prisma Schema — All models aligned with Figma designs
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUT_OF_STOCK
+}
+
+enum Flex {
+  STIFF
+  MEDIUM
+  FLEXIBLE
+}
+
+enum SkillLevel {
+  PROFESSIONAL
+  INTERMEDIATE
+  BEGINNER
+}
+
+enum PlayStyle {
+  POWER_HEAD_HEAVY
+  SPEED_HEAD_LIGHT
+  CONTROL_EVEN_BALANCE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPING
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_TRANSFER
+  E_WALLET
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum ShippingMethod {
+  STANDARD_DELIVERY
+  EXPRESS_VELOCITY
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum NotificationType {
+  ORDER
+  PROMOTION
+  SYSTEM
+}
+
+enum BannerPosition {
+  HOME_HERO
+  HOME_BANNER
+  CATEGORY_HERO
+}
+
+// ==================== USER ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  fullName      String
+  phone         String?
+  avatar        String?
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  addresses     Address[]
+  cart          Cart?
+  orders        Order[]
+  reviews       Review[]
+  wishlist      Wishlist[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+// ==================== ADDRESS ====================
+
+model Address {
+  id           String   @id @default(uuid())
+  userId       String
+  firstName    String
+  lastName     String
+  phone        String?
+  addressLine1 String
+  city         String
+  postalCode   String
+  country      String   @default("US")
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// ==================== CATEGORY ====================
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  level       Int        @default(1)
+  isActive    Boolean    @default(true)
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@map("categories")
+}
+
+// ==================== BRAND ====================
+
+model Brand {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  logo        String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@map("brands")
+}
+
+// ==================== PRODUCT ====================
+
+model Product {
+  id               String        @id @default(uuid())
+  name             String
+  slug             String        @unique
+  description      String?       @db.Text
+  shortDescription String?
+  categoryId       String
+  brandId          String
+  basePrice        Decimal       @db.Decimal(10, 2)
+  salePrice        Decimal?      @db.Decimal(10, 2)
+  sku              String        @unique
+  status           ProductStatus @default(ACTIVE)
+  isFeatured       Boolean       @default(false)
+  isNewArrival     Boolean       @default(false)
+  totalSold        Int           @default(0)
+  avgRating        Decimal       @default(0) @db.Decimal(2, 1)
+  totalReviews     Int           @default(0)
+  metaTitle        String?
+  metaDescription  String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  category  Category        @relation(fields: [categoryId], references: [id])
+  brand     Brand           @relation(fields: [brandId], references: [id])
+  spec      ProductSpec?
+  variants  ProductVariant[]
+  images    ProductImage[]
+  cartItems CartItem[]
+  orderItems OrderItem[]
+  reviews   Review[]
+  wishlist  Wishlist[]
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([status])
+  @@index([isFeatured])
+  @@index([isNewArrival])
+  @@map("products")
+}
+
+// ==================== PRODUCT SPEC (Badminton-specific) ====================
+
+model ProductSpec {
+  id                 String      @id @default(uuid())
+  productId          String      @unique
+  flex               Flex?
+  frame              String?
+  shaft              String?
+  jointType          String?
+  weightGrip         String?
+  recommendedTension String?
+  skillLevel         SkillLevel?
+  playStyle          PlayStyle?
+  series             String?
+  technologies       Json?       // string array e.g. ["Rotational Generator System", "Namd Carbon"]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_specs")
+}
+
+// ==================== PRODUCT VARIANT ====================
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String
+  name      String
+  sku       String   @unique
+  price     Decimal  @db.Decimal(10, 2)
+  salePrice Decimal? @db.Decimal(10, 2)
+  stock     Int      @default(0)
+  attributes Json?   // flexible per category
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId])
+  @@map("product_variants")
+}
+
+// ==================== PRODUCT IMAGE ====================
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  isMain    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+// ==================== CART ====================
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  variantId String?
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@unique([cartId, productId, variantId])
+  @@map("cart_items")
+}
+
+// ==================== ORDER ====================
+
+model Order {
+  id              String         @id @default(uuid())
+  orderCode       String         @unique
+  userId          String
+  status          OrderStatus    @default(PENDING)
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus  @default(PENDING)
+  subtotal        Decimal        @db.Decimal(10, 2)
+  shippingFee     Decimal        @default(0) @db.Decimal(10, 2)
+  estimatedTax    Decimal        @default(0) @db.Decimal(10, 2)
+  discount        Decimal        @default(0) @db.Decimal(10, 2)
+  total           Decimal        @db.Decimal(10, 2)
+  note            String?
+  shippingAddress Json           // snapshot: {firstName, lastName, addressLine1, city, postalCode}
+  shippingMethod  ShippingMethod @default(STANDARD_DELIVERY)
+  couponId        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user   User        @relation(fields: [userId], references: [id])
+  coupon Coupon?     @relation(fields: [couponId], references: [id])
+  items  OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderCode])
+  @@map("orders")
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  orderId      String
+  productId    String
+  variantId    String?
+  productName  String
+  productImage String
+  variantName  String?
+  price        Decimal  @db.Decimal(10, 2)
+  quantity     Int
+  total        Decimal  @db.Decimal(10, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id])
+  variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// ==================== COUPON ====================
+
+model Coupon {
+  id             String     @id @default(uuid())
+  code           String     @unique
+  type           CouponType
+  value          Decimal    @db.Decimal(10, 2)
+  minOrderAmount Decimal?   @db.Decimal(10, 2)
+  maxDiscount    Decimal?   @db.Decimal(10, 2)
+  usageLimit     Int        @default(0)
+  usedCount      Int        @default(0)
+  startDate      DateTime
+  endDate        DateTime
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  orders Order[]
+
+  @@map("coupons")
+}
+
+// ==================== REVIEW ====================
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  productId  String
+  orderId    String
+  rating     Int      // 1-5
+  comment    String?  @db.Text
+  images     Json?    // string array of image URLs
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([userId])
+  @@map("reviews")
+}
+
+// ==================== WISHLIST ====================
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlists")
+}
+
+// ==================== NOTIFICATION ====================
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  title     String
+  content   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+// ==================== BANNER ====================
+
+model Banner {
+  id           String         @id @default(uuid())
+  title        String
+  subtitle     String?
+  image        String
+  link         String?
+  ctaPrimary   String?
+  ctaSecondary String?
+  position     BannerPosition
+  sortOrder    Int            @default(0)
+  isActive     Boolean        @default(true)
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("banners")
+}
+
+// ==================== ATHLETE (Team Kinetic) ====================
+
+model Athlete {
+  id          String   @id @default(uuid())
+  name        String
+  title       String?
+  image       String
+  profileLink String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("athletes")
+}
+
+// ==================== TECHNOLOGY (Engineered to Dominate) ====================
+
+model Technology {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  shortDescription String?
+  fullDescription  String?  @db.Text
+  image            String?
+  icon             String?
+  statLabel        String?
+  statValue        String?
+  sortOrder        Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("technologies")
+}

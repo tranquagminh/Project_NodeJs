@@ -1,0 +1,34 @@
+{
+  "name": "ecommerce-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack E-Commerce Platform",
+  "workspaces": [
+    "client",
+    "admin",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:admin": "npm run dev --workspace=admin",
+    "build:server": "npm run build --workspace=server",
+    "build:client": "npm run build --workspace=client",
+    "build:admin": "npm run build --workspace=admin",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "keywords": [
+    "ecommerce",
+    "nodejs",
+    "nextjs",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "prettier": "^3.8.1"
+  }
+}

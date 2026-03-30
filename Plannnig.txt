@@ -1,0 +1,995 @@
+🚀 Kế Hoạch Phát Triển Dự Án E-Commerce Toàn Diện
+
+═══════════════════════════════════════════════════════════
+🏸 DOMAIN: KINETIC — Badminton & Racket Sports E-Commerce
+═══════════════════════════════════════════════════════════
+
+Brand Name: KINETIC
+Tagline: "High Performance Engineered for the Elite Athlete. Precision in Every Frame."
+Niche: Badminton equipment & gear (rackets, shoes, apparel, shuttlecocks, strings, accessories)
+
+📐 FIGMA DESIGNS (4 Core Pages):
+  1. Homepage           → node 1:386
+  2. Product Listing    → node 1:3
+  3. Product Detail     → node 1:636
+  4. Checkout           → node 1:876
+  File: 3z4oPEkCIcUJRGPIdRuDXZ
+
+Navigation Categories: RACKETS | SHOES | APPAREL | SHUTTLECOCKS | STRINGS | ACCESSORIES
+
+PHASE 0: CHỌN TECH STACK
+
+🎯 Đề Xuất Tech Stack
+text
+┌─────────────────────────────────────────────────────────┐
+│                    TECH STACK                           │
+├─────────────┬───────────────────────────────────────────┤
+│ FRONTEND    │ React.js (Next.js) + TypeScript           │
+│ (User)      │ TailwindCSS + Shadcn/UI                  │
+│             │ Redux Toolkit / Zustand (State)           │
+│             │ React Query (Data Fetching)               │
+├─────────────┼───────────────────────────────────────────┤
+│ ADMIN       │ React.js + Ant Design / Shadcn            │
+│ DASHBOARD   │ Recharts (Biểu đồ)                       │
+│             │ React Router                              │
+├─────────────┼───────────────────────────────────────────┤
+│ BACKEND     │ Node.js + Express.js / NestJS             │
+│ (API)       │ TypeScript                                │
+│             │ JWT + Refresh Token (Auth)                 │
+├─────────────┼───────────────────────────────────────────┤
+│ DATABASE    │ PostgreSQL (chính) + Redis (cache)        │
+│             │ Prisma / TypeORM (ORM)                    │
+├─────────────┼───────────────────────────────────────────┤
+│ STORAGE     │ AWS S3 / Cloudinary (ảnh sản phẩm)       │
+├─────────────┼───────────────────────────────────────────┤
+│ PAYMENT     │ Stripe / VNPay / MoMo                     │
+├─────────────┼───────────────────────────────────────────┤
+│ DEPLOYMENT  │ Docker + VPS / AWS / Vercel               │
+├─────────────┼───────────────────────────────────────────┤
+│ OTHER       │ Socket.io (realtime notification)         │
+│             │ Nodemailer (email)                        │
+│             │ Elasticsearch (search - optional)         │
+└─────────────┴───────────────────────────────────────────┘
+PHASE 1: KHỞI TẠO DỰ ÁN & CẤU TRÚC (Tuần 1)
+
+1.1 Thiết lập Monorepo hoặc Multi-repo
+text
+ecommerce-project/
+├── client/              # Frontend User
+│   ├── src/
+│   │   ├── components/  # Reusable components
+│   │   ├── pages/       # Các trang
+│   │   ├── hooks/       # Custom hooks
+│   │   ├── store/       # State management
+│   │   ├── services/    # API calls
+│   │   ├── utils/       # Helper functions
+│   │   ├── types/       # TypeScript types
+│   │   └── styles/      # Global styles
+│   └── package.json
+│
+├── admin/               # Admin Dashboard
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── hooks/
+│   │   ├── store/
+│   │   ├── services/
+│   │   └── utils/
+│   └── package.json
+│
+├── server/              # Backend API
+│   ├── src/
+│   │   ├── controllers/ # Xử lý request
+│   │   ├── services/    # Business logic
+│   │   ├── models/      # Database models
+│   │   ├── routes/      # API routes
+│   │   ├── middlewares/  # Auth, validation,...
+│   │   ├── utils/       # Helper functions
+│   │   ├── config/      # DB, env config
+│   │   └── types/       # TypeScript types
+│   ├── prisma/
+│   │   └── schema.prisma
+│   └── package.json
+│
+├── shared/              # Shared types/utils
+├── docker-compose.yml
+├── .gitignore
+└── README.md
+1.2 Checklist Phase 1
+text
+□ Khởi tạo Git repository
+□ Setup client (Next.js + TypeScript + TailwindCSS)
+□ Setup admin (React + Vite + TypeScript)
+□ Setup server (Express/NestJS + TypeScript)
+□ Setup PostgreSQL + Prisma
+□ Setup Redis
+□ Cấu hình ESLint + Prettier
+□ Cấu hình Docker + docker-compose
+□ Setup biến môi trường (.env)
+□ Test kết nối DB
+PHASE 2: DATABASE DESIGN (Tuần 1-2)
+
+2.1 Schema Design
+sql
+-- ==================== USERS ====================
+User
+├── id (UUID, PK)
+├── email (unique)
+├── password (hashed)
+├── fullName
+├── phone
+├── avatar
+├── role (USER / ADMIN / SUPER_ADMIN)
+├── isActive (boolean)
+├── emailVerified (boolean)
+├── createdAt
+└── updatedAt
+
+-- ==================== ADDRESS (Shipping Destination from Figma) ====================
+Address
+├── id (UUID, PK)
+├── userId (FK → User)
+├── firstName
+├── lastName
+├── phone
+├── addressLine1              -- Street address, P.O. Box
+├── city
+├── postalCode
+├── country (default: US)
+├── isDefault (boolean)
+├── createdAt
+└── updatedAt
+
+-- ==================== CATEGORY ====================
+Category (Predefined for Badminton)
+├── id (UUID, PK)
+├── name                    -- e.g., Rackets, Shoes, Apparel, Shuttlecocks, Strings, Accessories
+├── slug (unique)
+├── description
+├── image
+├── parentId (FK → Category, nullable) -- Danh mục cha
+├── level (1, 2, 3)
+├── isActive
+├── sortOrder
+├── createdAt
+└── updatedAt
+
+Seed Categories:
+  L1: Rackets
+    L2: Astrox Series (Offensive), Nanoflare Series (Speed), Arcsaber Series (Control)
+  L1: Shoes
+    L2: Power Cushion, Court Shoes
+  L1: Apparel
+  L1: Shuttlecocks
+    L2: Tournament, Training
+  L1: Strings
+  L1: Accessories
+    L2: Bags, Grips, Equipment
+
+-- ==================== BRAND ====================
+Brand
+├── id (UUID, PK)
+├── name                     -- e.g., "KINETIC", "YONEX", "Mizuno", "Babolat"
+├── slug (unique)
+├── logo
+├── description
+├── isActive
+├── createdAt
+└── updatedAt
+
+-- ==================== PRODUCT ====================
+Product
+├── id (UUID, PK)
+├── name
+├── slug (unique)
+├── description
+├── shortDescription
+├── categoryId (FK → Category)
+├── brandId (FK → Brand)
+├── basePrice
+├── salePrice
+├── sku
+├── status (ACTIVE / INACTIVE / OUT_OF_STOCK)
+├── isFeatured
+├── isNewArrival (boolean)       -- NEW: for "New Arrivals" section
+├── totalSold
+├── avgRating
+├── totalReviews
+├── metaTitle (SEO)
+├── metaDescription (SEO)
+├── createdAt
+└── updatedAt
+
+-- ==================== PRODUCT SPECS (Badminton-specific) ====================
+ProductSpec
+├── id (UUID, PK)
+├── productId (FK → Product)
+├── flex (STIFF / MEDIUM / FLEXIBLE)           -- Shaft flex
+├── frame (string)                             -- e.g., "HM Graphite / VOLUME CUT RESIN"
+├── shaft (string)                             -- e.g., "HM Graphite / Namd"
+├── jointType (string)                         -- e.g., "New Built-in T-Joint"
+├── weightGrip (string)                        -- e.g., "4U (Avg. 83g) G5 / 3U (Avg. 88g) G4, 5, 6"
+├── recommendedTension (string)                -- e.g., "4U: 20-28 lbs / 3U: 21-29 lbs"
+├── skillLevel (PROFESSIONAL / INTERMEDIATE / BEGINNER)
+├── playStyle (POWER_HEAD_HEAVY / SPEED_HEAD_LIGHT / CONTROL_EVEN_BALANCE)
+├── series (string)                            -- e.g., "Astrox", "Nanoflare", "Arcsaber"
+├── technologies (JSON array)                  -- e.g., ["Rotational Generator System", "Namd Carbon"]
+├── createdAt
+└── updatedAt
+
+-- ==================== PRODUCT VARIANT ====================
+ProductVariant
+├── id (UUID, PK)
+├── productId (FK → Product)
+├── name (e.g., "BG80 - Leather - G5 - 26lbs")
+├── sku
+├── price
+├── salePrice
+├── stock
+├── attributes (JSON) -- Flexible per category:
+│     Rackets: {"string": "YONEX BG80", "gripType": "LEATHER", "gripSize": "G5", "tension": 26}
+│     Shoes:   {"size": "10.5 US", "color": "Racing Red"}
+│     Apparel: {"size": "XL", "color": "Navy"}
+│     Shuttlecocks: {"speed": 77, "pack": 12}
+├── createdAt
+└── updatedAt
+
+-- ==================== PRODUCT IMAGE ====================
+ProductImage
+├── id (UUID, PK)
+├── productId (FK → Product)
+├── url
+├── alt
+├── sortOrder
+├── isMain (boolean)
+├── createdAt
+└── updatedAt
+
+-- ==================== CART ====================
+Cart
+├── id (UUID, PK)
+├── userId (FK → User)
+├── createdAt
+└── updatedAt
+
+CartItem
+├── id (UUID, PK)
+├── cartId (FK → Cart)
+├── productId (FK → Product)
+├── variantId (FK → ProductVariant, nullable)
+├── quantity
+├── createdAt
+└── updatedAt
+
+-- ==================== ORDER ====================
+Order
+├── id (UUID, PK)
+├── orderCode (unique, auto-gen)
+├── userId (FK → User)
+├── status (PENDING/CONFIRMED/SHIPPING/DELIVERED/CANCELLED)
+├── paymentMethod (CREDIT_CARD / BANK_TRANSFER / E_WALLET)
+├── paymentStatus (PENDING / PAID / FAILED / REFUNDED)
+├── subtotal
+├── shippingFee                   -- FREE for Standard, $25 for Express
+├── estimatedTax
+├── discount
+├── total
+├── note
+├── shippingAddress (JSON) -- snapshot: {firstName, lastName, addressLine1, city, postalCode}
+├── shippingMethod (STANDARD_DELIVERY / EXPRESS_VELOCITY) -- From Figma checkout
+├── couponId (FK → Coupon, nullable)
+├── createdAt
+└── updatedAt
+
+OrderItem
+├── id (UUID, PK)
+├── orderId (FK → Order)
+├── productId (FK → Product)
+├── variantId (FK → ProductVariant, nullable)
+├── productName -- snapshot
+├── productImage -- snapshot
+├── variantName -- snapshot
+├── price
+├── quantity
+├── total
+├── createdAt
+└── updatedAt
+
+-- ==================== COUPON ====================
+Coupon
+├── id (UUID, PK)
+├── code (unique)
+├── type (PERCENTAGE / FIXED_AMOUNT)
+├── value
+├── minOrderAmount
+├── maxDiscount
+├── usageLimit
+├── usedCount
+├── startDate
+├── endDate
+├── isActive
+├── createdAt
+└── updatedAt
+
+-- ==================== REVIEW ====================
+Review
+├── id (UUID, PK)
+├── userId (FK → User)
+├── productId (FK → Product)
+├── orderId (FK → Order)
+├── rating (1-5)
+├── comment
+├── images (JSON array)
+├── isApproved
+├── createdAt
+└── updatedAt
+
+-- ==================== WISHLIST ====================
+Wishlist
+├── id (UUID, PK)
+├── userId (FK → User)
+├── productId (FK → Product)
+├── createdAt
+└── updatedAt
+
+-- ==================== NOTIFICATION ====================
+Notification
+├── id (UUID, PK)
+├── userId (FK → User)
+├── title
+├── content
+├── type (ORDER / PROMOTION / SYSTEM)
+├── isRead
+├── metadata (JSON)
+├── createdAt
+└── updatedAt
+
+-- ==================== BANNER / SLIDER ====================
+Banner
+├── id (UUID, PK)
+├── title                    -- e.g., "ASTROX 100 ZZ"
+├── subtitle                 -- e.g., "Engineered for the relentless attacker..."
+├── image
+├── link
+├── ctaPrimary (string)      -- e.g., "SHOP NOW"
+├── ctaSecondary (string)    -- e.g., "EXPLORE TECHNOLOGY"
+├── position (HOME_HERO / HOME_BANNER / CATEGORY_HERO)
+├── sortOrder
+├── isActive
+├── startDate
+├── endDate
+├── createdAt
+└── updatedAt
+
+-- ==================== ATHLETE / TEAM (from "Team Kinetic" section) ====================
+Athlete
+├── id (UUID, PK)
+├── name                     -- e.g., "Viktor Axelsen", "An Se-Young", "Kento Momota"
+├── title                    -- e.g., "World #1 Champion"
+├── image
+├── profileLink
+├── sortOrder
+├── isActive
+├── createdAt
+└── updatedAt
+
+-- ==================== TECHNOLOGY (from "Engineered to Dominate" section) ====================
+Technology
+├── id (UUID, PK)
+├── name                     -- e.g., "Power Cushion+", "Rotational Generator System", "Namd Carbon"
+├── slug (unique)
+├── shortDescription
+├── fullDescription
+├── image
+├── icon
+├── statLabel (string)       -- e.g., "Energy Return"
+├── statValue (string)       -- e.g., "62%"
+├── sortOrder
+├── isActive
+├── createdAt
+└── updatedAt
+
+2.2 Design System (Extracted from Figma)
+text
+COLORS:
+  Primary Blue:    #00538F (prices, buttons, accents)
+  Primary Green:   #006D31 / #007434 (CTAs, success, badges, "In Stock")
+  Accent Green:    #77FD98 (badge backgrounds)
+  Dark Navy:       #1B1C1E (headings, text)
+  Background:      #FAF9FB (page bg)
+  White:           #FFFFFF (cards, content areas)
+  Light Gray:      #F5F3F5 (thumbnail bg)
+  Dark Section:    #0A1628 (hero banner, tech sections)
+
+TYPOGRAPHY:
+  Headings:        Space Grotesk Bold (tracking tight)
+  Body/Labels:     Inter (regular, bold)
+  Hero titles:     80-100px+ (homepage), 48px (product detail)
+  Section titles:  36-48px italic bold uppercase
+  Price:           30px Space Grotesk Bold, #00538F
+  Labels:          12px Inter Bold, uppercase, tracking 1.2-2.4px
+
+BUTTON STYLES:
+  Primary:         bg-[#1B1C1E] text-white, full-width (e.g., "ADD TO TACTICAL KIT")
+  CTA Green:       bg-[#006D31] text-white (e.g., "SHOP NOW")
+  Outline:         border-white text-white (e.g., "EXPLORE TECHNOLOGY")
+  Execute:         bg-[#1B1C1E] text-white + ⚡ icon (e.g., "EXECUTE ORDER")
+
+CARD PATTERNS:
+  Product Card:    white bg, product image, series label (small caps), name (bold), price, attribute pills
+  Athlete Card:    full-bleed image, dark overlay at bottom, white text name + title
+
+BRAND NAMING:
+  Cart → "Tactical Kit" / "Performance Kit"
+  Add to Cart → "ADD TO TACTICAL KIT"
+  Place Order → "EXECUTE ORDER ⚡"
+  Shipping → "Standard Delivery" / "Express Velocity"
+
+2.3 Checklist Phase 2
+text
+□ Thiết kế ERD (Entity Relationship Diagram)
+□ Viết Prisma Schema
+□ Tạo migrations
+□ Seed data mẫu
+□ Test quan hệ giữa các bảng
+PHASE 3: BACKEND API DEVELOPMENT (Tuần 2-5)
+
+3.1 Thứ tự phát triển API
+text
+SPRINT 1 (Tuần 2): Authentication & User
+─────────────────────────────────────────
+□ POST   /api/auth/register
+□ POST   /api/auth/login
+□ POST   /api/auth/logout
+□ POST   /api/auth/refresh-token
+□ POST   /api/auth/forgot-password
+□ POST   /api/auth/reset-password
+□ POST   /api/auth/verify-email
+□ GET    /api/auth/me
+□ PUT    /api/users/profile
+□ PUT    /api/users/change-password
+□ POST   /api/users/avatar
+□ CRUD   /api/users/addresses
+
+Middleware cần làm:
+□ authMiddleware (verify JWT)
+□ roleMiddleware (check ADMIN/USER)
+□ validationMiddleware (Joi/Zod)
+□ errorHandler (global error handling)
+□ rateLimiter
+
+SPRINT 2 (Tuần 3): Product & Category & Brand + Badminton Specs
+────────────────────────────────────────────────────────────────
+□ CRUD   /api/admin/categories
+□ GET    /api/categories (public, tree structure)
+□ CRUD   /api/admin/brands
+□ GET    /api/brands (public)
+□ CRUD   /api/admin/products
+□ GET    /api/products (public, with filters: skillLevel, playStyle, series, weightGrip, priceRange + pagination)
+□ GET    /api/products/:slug (includes specs, variants, images, technologies)
+□ GET    /api/products/featured
+□ GET    /api/products/new-arrivals
+□ GET    /api/products/search?q=...
+□ POST   /api/admin/products/:id/images (upload)
+□ CRUD   /api/admin/products/:id/variants
+□ CRUD   /api/admin/products/:id/specs (badminton-specific specs)
+□ CRUD   /api/admin/athletes (Team Kinetic)
+□ GET    /api/athletes (public)
+□ CRUD   /api/admin/technologies (Engineered to Dominate)
+□ GET    /api/technologies (public)
+
+SPRINT 3 (Tuần 4): Cart & Order & Payment
+──────────────────────────────────────────
+□ GET    /api/cart
+□ POST   /api/cart/items
+□ PUT    /api/cart/items/:id
+□ DELETE /api/cart/items/:id
+□ DELETE /api/cart/clear
+□ POST   /api/orders (tạo đơn hàng)
+□ GET    /api/orders (lịch sử đơn hàng)
+□ GET    /api/orders/:id
+□ PUT    /api/orders/:id/cancel
+□ POST   /api/payment/create (tạo thanh toán)
+□ POST   /api/payment/webhook (callback từ cổng TT)
+□ GET    /api/payment/verify/:orderId
+
+SPRINT 4 (Tuần 5): Review, Coupon, Wishlist, Others
+────────────────────────────────────────────────────
+□ POST   /api/reviews
+□ GET    /api/products/:id/reviews
+□ POST   /api/coupons/verify
+□ CRUD   /api/admin/coupons
+□ GET    /api/wishlist
+□ POST   /api/wishlist
+□ DELETE /api/wishlist/:productId
+□ GET    /api/notifications
+□ PUT    /api/notifications/:id/read
+□ CRUD   /api/admin/banners
+□ GET    /api/banners (public)
+
+ADMIN SPECIFIC APIs:
+□ GET    /api/admin/dashboard/stats
+□ GET    /api/admin/dashboard/revenue
+□ GET    /api/admin/dashboard/recent-orders
+□ GET    /api/admin/orders (tất cả đơn hàng)
+□ PUT    /api/admin/orders/:id/status
+□ GET    /api/admin/users (quản lý users)
+□ PUT    /api/admin/users/:id/status
+□ GET    /api/admin/reviews (quản lý đánh giá)
+□ PUT    /api/admin/reviews/:id/approve
+3.2 Code Architecture Pattern
+text
+Request Flow:
+─────────────
+Client → Route → Middleware → Controller → Service → Repository → DB
+                     ↓
+              (Auth, Validate)
+
+// Ví dụ: Product Module
+server/src/
+├── modules/
+│   └── product/
+│       ├── product.route.ts      # Định nghĩa routes
+│       ├── product.controller.ts # Nhận request, trả response
+│       ├── product.service.ts    # Business logic
+│       ├── product.repository.ts # Query DB (optional)
+│       ├── product.validation.ts # Zod/Joi schemas
+│       └── product.types.ts      # TypeScript interfaces
+3.3 Checklist Phase 3
+text
+□ Setup cấu trúc project theo module
+□ Implement global error handling
+□ Implement response format chuẩn
+□ Implement từng Sprint API theo thứ tự
+□ Viết Unit Tests cho Service layer
+□ Viết Integration Tests cho API
+□ Setup Swagger/OpenAPI documentation
+□ Test toàn bộ API bằng Postman/Thunder Client
+PHASE 4: FRONTEND USER (Tuần 4-8)
+
+4.1 Danh sách Pages
+text
+SPRINT 5 (Tuần 4-5): Core Pages — FROM FIGMA DESIGNS
+─────────────────────────────────────────────────────
+□ Layout chung (Header, Footer)
+│  ├── Header: KINETIC Logo, Nav (Rackets|Shoes|Apparel|Shuttlecocks|Strings|Accessories)
+│  ├── Search bar (Search Performance...)
+│  ├── User icon, Cart icon with badge
+│  └── Footer: KINETIC branding, Support links, Company links, Newsletter signup
+│             "High Performance Engineered for the Elite Athlete."
+│             Social icons, © 2024 KINETIC PERFORMANCE, GLOBAL SHIPPING ACTIVE
+│
+□ Trang chủ (/) — FIGMA node 1:386
+│  ├── Hero Banner: Full-width dark blue bg, product image, product name (ASTROX 100 ZZ)
+│  │   ├── Subtitle: "Engineered for the relentless attacker..."
+│  │   └── CTAs: "EXPLORE TECHNOLOGY" (outline) + "SHOP NOW" (green)
+│  ├── NEW ARRIVALS section
+│  │   ├── Featured large product card (Power Cushion Infinity 2) with "SHOP SHOES" link
+│  │   ├── Small product cards grid (Nanoflare 800, Aerosena 50)
+│  │   ├── Tournament Gear spotlight, "LOAD CATALOG" CTA
+│  │   └── "VIEW ALL COLLECTIONS →" link
+│  ├── ENGINEERED TO DOMINATE section (dark blue bg)
+│  │   ├── Power Cushion+ technology with stat "62% Energy Return"
+│  │   ├── Rotational Generator System with stat "28% More Racket Turnover"
+│  │   └── Product/tech images grid
+│  ├── TEAM KINETIC section
+│  │   ├── "Powered by Champions" subtitle
+│  │   └── Athlete cards: Viktor Axelsen, An Se-Young, Kento Momota (with name overlay)
+│  ├── TECHNICAL BLUEPRINT section (dark bg)
+│  │   ├── Racket configurator/specs: Flex, String, Grip, Bracket Cost, Weight info
+│  │   └── "CONFIGURE YOUR RACKET" CTA
+│  └── Footer with KINETIC PERFORMANCE newsletter ("ENTER EMAIL" + arrow button)
+│
+□ Trang danh sách sản phẩm (/products, /rackets, etc.) — FIGMA node 1:3
+│  ├── Category Hero banner: dark gradient bg, "ENGINEERED FOR PRECISION"
+│  │   ├── Category title: "PRO-GRADE RACKETS" (large green + white text)
+│  │   └── Description: "Experience the ultimate fusion of aerodynamics..."
+│  ├── FILTERS sidebar (left)
+│  │   ├── SKILL LEVEL: Professional, Intermediate, Beginner (checkbox pills)
+│  │   ├── PLAY STYLE: Power (Head Heavy), Speed (Head Light), Control (Even Balance)
+│  │   ├── SERIES: Astrox, Nanoflare, Arcsaber (text list)
+│  │   ├── WEIGHT & GRIP: 3U G4, 4U G5, etc. (toggle pills)
+│  │   └── PRICE RANGE: slider ($50 — $200+)
+│  ├── Results header: "SHOWING 24 RESULTS" + SORT BY dropdown (Newest Arrivals)
+│  ├── Product Grid (3 columns)
+│  │   ├── Product Card: image, "NEW ARRIVAL" badge (green), series label, name, price
+│  │   ├── Attribute pills: play style icon + label, flex indicator icon + label
+│  │   └── Colors: green for power, blue for speed, red for control
+│  └── Pagination: < 1 2 3 >
+│
+□ Trang chi tiết sản phẩm (/products/:slug) — FIGMA node 1:636
+│  ├── Hero Product Section (2-column)
+│  │   ├── LEFT: Gallery with thumbnails (vertical strip) + large main image (white bg, shadow)
+│  │   │   └── Watermark "88 D" text behind product image
+│  │   └── RIGHT: Product Info
+│  │       ├── Series label: "ASTROX SERIES | OFFENSIVE DOMINANCE" (green uppercase)
+│  │       ├── Product name: "ASTROX 88 D PRO" (large bold)
+│  │       ├── Price: "$235.00" (blue) + "In Stock" badge (green)
+│  │       ├── SELECT PERFORMANCE STRING: dropdown (YONEX BG80, NANOGY 98, etc.)
+│  │       │   └── "Recommended: BG80" hint
+│  │       ├── GRIP TYPE: dropdown (EXPERT100, AURASPEED)
+│  │       ├── TENSION (LBS): number input with +/- buttons (default: 26)
+│  │       ├── "ADD TO TACTICAL KIT" button (dark blue, full width) + Wishlist heart icon
+│  │       └── Note: "Tactical Kit" = Cart naming for sports context
+│  ├── ENGINEERED SPECS section
+│  │   ├── Flex: STIFF (with slider visualization)
+│  │   ├── Frame: HM Graphite / VOLUME CUT RESIN / Tungsten
+│  │   ├── Shaft Material: HM Graphite / Namd
+│  │   ├── Joint Type: New Built-in T-Joint
+│  │   ├── Weight/Grip: 4U (Avg. 83g) G5 / 3U (Avg. 88g) G4, 5, 6
+│  │   └── Recommended Tension: 4U: 20-28 lbs / 3U: 21-29 lbs
+│  ├── ROTATIONAL GENERATOR SYSTEM section (technology deep-dive)
+│  │   ├── Description + product image
+│  │   └── "FLEX PATTERN" tooltip overlay on image
+│  ├── NAMD CARBON section (material technology)
+│  │   └── Description of graphite fiber technology
+│  ├── COMPLETE YOUR LOADOUT section (related/cross-sell)
+│  │   ├── "VIEW COLLECTION" link
+│  │   ├── Product cards: Shoes (Power Cushion 65 Z3), Equipment (Pro Tournament Bag), Essentials (Aerosena 50)
+│  │   └── Each card: category label, name, price, "RECOMMENDED" badge
+│  └── Footer
+│
+□ Trang tìm kiếm (/search?q=...)
+
+SPRINT 6 (Tuần 5-6): Auth & User Pages
+───────────────────────────────────────
+□ Đăng nhập (/login)
+□ Đăng ký (/register)
+□ Quên mật khẩu (/forgot-password)
+□ Reset mật khẩu (/reset-password)
+□ Tài khoản (/account)
+│  ├── Thông tin cá nhân
+│  ├── Đổi mật khẩu
+│  ├── Sổ địa chỉ
+│  ├── Đơn hàng của tôi
+│  ├── Chi tiết đơn hàng
+│  ├── Wishlist
+│  └── Thông báo
+
+SPRINT 7 (Tuần 6-7): Cart & Checkout — FIGMA node 1:876
+────────────────────────────────────────────────────────
+□ Checkout page (/checkout) — Combined Cart + Checkout (single page from Figma)
+│  ├── Page header: "YOUR PERFORMANCE KIT" subtitle + "CHECKOUT" title
+│  ├── LEFT COLUMN:
+│  │   ├── CART ITEMS (02) section
+│  │   │   ├── Item row: product image, name, price, variant specs (Tension, Weight, Size, Color)
+│  │   │   ├── Quantity control: [-] [1] [+]
+│  │   │   └── "🗑 REMOVE" button
+│  │   ├── 01 SHIPPING DESTINATION section (green numbered badge)
+│  │   │   ├── First Name / Last Name (side by side)
+│  │   │   ├── Address Line 1 (Street Address, P.O. Box)
+│  │   │   └── City / Postal Code (side by side)
+│  │   └── 02 SHIPPING METHOD section (green numbered badge)
+│  │       ├── ● STANDARD DELIVERY — 3-5 Business Days — FREE
+│  │       └── ○ EXPRESS VELOCITY — Next Day Priority — $25.00
+│  └── RIGHT COLUMN (sticky):
+│      ├── ORDER SUMMARY card
+│      │   ├── Subtotal: $405.00
+│      │   ├── Estimated Shipping: FREE (green)
+│      │   ├── Estimated Tax: $32.40
+│      │   └── TOTAL: $437.40 (large green text)
+│      ├── SECURE PAYMENT section
+│      │   ├── Payment method tabs: Credit Card (selected) | Bank | Wallet
+│      │   ├── Card Number input (**** **** **** ****)
+│      │   ├── Expiry (MM/YY) / CVC (side by side)
+│      │   └── "EXECUTE ORDER ⚡" button (dark blue, full width)
+│      └── Trust badges: SSL SECURE | ENCRYPTED | CERTIFIED
+│
+□ Kết quả đặt hàng (/order-success)
+□ Kết quả thanh toán (/payment/result)
+
+SPRINT 8 (Tuần 7-8): Polish & Extras
+─────────────────────────────────────
+□ Responsive design (mobile-first)
+□ Loading skeletons
+□ Toast notifications
+□ Error pages (404, 500)
+□ SEO optimization (meta tags, sitemap)
+□ Performance optimization (lazy load, image opt)
+□ PWA setup (optional)
+4.2 Component Structure (Aligned with Figma Designs)
+text
+components/
+├── common/
+│   ├── Button/              # Primary (dark blue), Secondary (outline), CTA (green)
+│   ├── Input/
+│   ├── Modal/
+│   ├── Dropdown/
+│   ├── Pagination/          # < 1 2 3 > style from product listing
+│   ├── Breadcrumb/
+│   ├── Rating/
+│   ├── Badge/               # "NEW ARRIVAL" (green), "IN STOCK", "RECOMMENDED"
+│   ├── Skeleton/
+│   ├── Toast/
+│   ├── EmptyState/
+│   ├── PillToggle/          # Filter pill buttons (3U G4, 4U G5)
+│   ├── PriceSlider/         # Price range slider ($50 — $200+)
+│   └── NumberStepper/       # [-] [26] [+] for tension/quantity
+│
+├── layout/
+│   ├── Header/
+│   │   ├── Logo.tsx         # KINETIC logo (green text)
+│   │   ├── NavLinks.tsx     # Rackets|Shoes|Apparel|Shuttlecocks|Strings|Accessories
+│   │   ├── SearchBar.tsx    # "Search Performance..." with icon
+│   │   ├── CartIcon.tsx     # Cart with item count badge
+│   │   └── UserMenu.tsx     # User avatar icon
+│   ├── Footer/
+│   │   ├── FooterBrand.tsx  # KINETIC logo + tagline
+│   │   ├── FooterLinks.tsx  # Support, Tech, Company columns
+│   │   ├── FooterNewsletter.tsx  # "ENTER EMAIL" + arrow submit
+│   │   └── FooterBottom.tsx # Copyright + social icons + Global Shipping Active
+│   └── MobileMenu/
+│
+├── product/
+│   ├── ProductCard.tsx      # Image, series label, name, price, attribute pills
+│   ├── ProductGrid.tsx      # 3-column grid
+│   ├── ProductFilter.tsx    # Skill Level, Play Style, Series, Weight, Price filters
+│   ├── ProductSort.tsx      # "SORT BY: Newest Arrivals" dropdown
+│   ├── ProductGallery.tsx   # Vertical thumbnails + large image with watermark
+│   ├── ProductInfo.tsx      # Series, name, price, stock, variant selectors
+│   ├── VariantSelector.tsx  # String type, Grip type dropdowns
+│   ├── TensionSelector.tsx  # Number stepper for tension (lbs)
+│   ├── SpecsTable.tsx       # Engineered Specs grid (flex, frame, shaft, etc.)
+│   ├── TechSection.tsx      # Technology deep-dive (Rotational Generator, Namd Carbon)
+│   └── CompleteLoadout.tsx  # Cross-sell related products section
+│
+├── cart/
+│   ├── CartItem.tsx         # Product image, name, specs, price, quantity, remove
+│   ├── OrderSummary.tsx     # Subtotal, shipping, tax, total
+│   └── TrustBadges.tsx      # SSL Secure, Encrypted, Certified
+│
+├── checkout/
+│   ├── ShippingForm.tsx     # First/Last name, Address, City, Postal Code
+│   ├── ShippingMethod.tsx   # Standard Delivery / Express Velocity radio
+│   ├── PaymentTabs.tsx      # Credit Card / Bank / Wallet tabs
+│   ├── CardForm.tsx         # Card number, Expiry, CVC
+│   └── ExecuteOrder.tsx     # "EXECUTE ORDER ⚡" button
+│
+├── home/
+│   ├── HeroBanner.tsx       # Full-width dark blue hero with product + CTAs
+│   ├── NewArrivals.tsx      # Featured product + grid + Tournament Gear
+│   ├── EngineeredSection.tsx # "Engineered to Dominate" tech showcase
+│   ├── TeamKinetic.tsx      # Athlete cards with name overlay
+│   ├── TechBlueprint.tsx    # Racket configurator/specs section
+│   └── Newsletter.tsx       # "KINETIC NEWSLETTER" email signup
+│
+└── review/
+    ├── ReviewList.tsx
+    ├── ReviewItem.tsx
+    ├── ReviewForm.tsx
+    └── RatingStars.tsx
+PHASE 5: ADMIN DASHBOARD (Tuần 7-10)
+
+5.1 Danh sách Pages Admin
+text
+SPRINT 9 (Tuần 7-8): Core Admin
+────────────────────────────────
+□ Login Admin (/admin/login)
+□ Dashboard (/admin)
+│  ├── Thống kê tổng quan (doanh thu, đơn hàng, users, SP)
+│  ├── Biểu đồ doanh thu (theo ngày/tuần/tháng)
+│  ├── Đơn hàng gần đây
+│  ├── Sản phẩm bán chạy
+│  └── Top khách hàng
+│
+□ Quản lý sản phẩm (/admin/products)
+│  ├── Danh sách (table + search + filter)
+│  ├── Thêm sản phẩm (form + upload ảnh + variants)
+│  ├── Sửa sản phẩm
+│  └── Xóa sản phẩm
+│
+□ Quản lý danh mục (/admin/categories)
+│  ├── Tree view
+│  ├── CRUD danh mục
+│  └── Drag & drop sắp xếp
+│
+□ Quản lý thương hiệu (/admin/brands)
+
+SPRINT 10 (Tuần 8-9): Order & User Management
+──────────────────────────────────────────────
+□ Quản lý đơn hàng (/admin/orders)
+│  ├── Danh sách (filter theo status)
+│  ├── Chi tiết đơn hàng
+│  ├── Cập nhật trạng thái
+│  └── In hóa đơn
+│
+□ Quản lý khách hàng (/admin/users)
+│  ├── Danh sách users
+│  ├── Chi tiết user + lịch sử mua
+│  └── Block/Unblock user
+│
+□ Quản lý đánh giá (/admin/reviews)
+│  ├── Danh sách reviews
+│  └── Approve/Reject review
+
+SPRINT 11 (Tuần 9-10): Marketing & Settings & Badminton CMS
+────────────────────────────────────────────────────────────
+□ Quản lý mã giảm giá (/admin/coupons)
+│  ├── CRUD coupon
+│  └── Thống kê sử dụng
+│
+□ Quản lý banner (/admin/banners)
+│  ├── CRUD banner (HOME_HERO / HOME_BANNER / CATEGORY_HERO)
+│  └── Preview
+│
+□ Quản lý Athletes (/admin/athletes) — NEW (Team Kinetic section)
+│  ├── CRUD athlete (name, title, image)
+│  └── Sort order
+│
+□ Quản lý Technologies (/admin/technologies) — NEW (Engineered to Dominate section)
+│  ├── CRUD technology (name, description, stat, image)
+│  └── Link technologies to products
+│
+□ Cài đặt (/admin/settings)
+│  ├── Thông tin cửa hàng (KINETIC branding)
+│  ├── Cấu hình thanh toán
+│  ├── Cấu hình vận chuyển (Standard Delivery / Express Velocity)
+│  └── Email templates
+│
+□ Báo cáo (/admin/reports)
+│  ├── Báo cáo doanh thu
+│  ├── Báo cáo sản phẩm (by category: Rackets, Shoes, etc.)
+│  └── Export Excel/PDF
+5.2 Admin Layout
+text
+┌──────────────────────────────────────────────────┐
+│ HEADER: Logo | Search | Notification | Admin ▼   │
+├────────────┬─────────────────────────────────────┤
+│            │                                     │
+│  SIDEBAR   │         MAIN CONTENT                │
+│            │                                     │
+│ Dashboard  │  ┌─────────────────────────────┐    │
+│ Products   │  │ Breadcrumb                  │    │
+│ Categories │  │ Page Title        [Actions] │    │
+│ Brands     │  ├─────────────────────────────┤    │
+│ Orders     │  │                             │    │
+│ Users      │  │    Table / Form / Chart     │    │
+│ Reviews    │  │                             │    │
+│ Coupons    │  │                             │    │
+│ Banners    │  │                             │    │
+│ Reports    │  │                             │    │
+│ Settings   │  └─────────────────────────────┘    │
+│            │                                     │
+└────────────┴─────────────────────────────────────┘
+PHASE 6: INTEGRATION & TESTING (Tuần 10-11)
+
+6.1 Checklist
+text
+INTEGRATION:
+□ Kết nối FE User ↔ BE API (tất cả các flow)
+□ Kết nối Admin ↔ BE API
+□ Test flow: Đăng ký → Đăng nhập → Duyệt SP → Thêm giỏ → Checkout → Thanh toán
+□ Test flow: Admin tạo SP → User thấy SP → User mua → Admin xử lý đơn
+□ Test payment gateway integration
+□ Test email notifications
+□ Test real-time notifications (Socket.io)
+
+TESTING:
+□ Unit Tests (Backend services) - Jest
+□ Integration Tests (API endpoints) - Supertest
+□ E2E Tests (Critical flows) - Cypress/Playwright
+□ Performance testing - Artillery/K6
+□ Security testing (SQL injection, XSS, CSRF)
+□ Cross-browser testing
+□ Mobile responsive testing
+PHASE 7: OPTIMIZATION & SECURITY (Tuần 11-12)
+
+7.1 Performance
+text
+BACKEND:
+□ Database indexing (các trường hay query)
+□ Query optimization (N+1 problem)
+□ Redis caching (products, categories)
+□ API response compression (gzip)
+□ Rate limiting
+□ Connection pooling
+
+FRONTEND:
+□ Image optimization (next/image, WebP, lazy load)
+□ Code splitting & lazy loading
+□ Bundle analysis & optimization
+□ CDN cho static assets
+□ Service Worker (cache)
+□ Core Web Vitals optimization (LCP, FID, CLS)
+7.2 Security
+text
+□ Input validation & sanitization
+□ SQL injection prevention (ORM)
+□ XSS prevention (helmet, CSP)
+□ CSRF protection
+□ CORS configuration
+□ Rate limiting & brute force protection
+□ Secure headers (helmet)
+□ HTTPS enforcement
+□ Environment variables protection
+□ Password hashing (bcrypt, salt rounds)
+□ JWT secure configuration (expiry, refresh)
+□ File upload validation (type, size)
+□ API versioning
+PHASE 8: DEPLOYMENT (Tuần 12-13)
+
+8.1 Infrastructure
+text
+┌─────────────────────────────────────────────┐
+│              DEPLOYMENT ARCHITECTURE         │
+├─────────────────────────────────────────────┤
+│                                             │
+│  Cloudflare (DNS + CDN + DDoS Protection)   │
+│         │                                   │
+│         ▼                                   │
+│  ┌─────────────┐    ┌──────────────────┐    │
+│  │   Vercel    │    │    VPS/AWS       │    │
+│  │  (Frontend) │    │   (Backend)      │    │
+│  │             │    │                  │    │
+│  │ - Next.js   │    │ - Docker         │    │
+│  │ - Admin     │◄──►│ - Node.js API    │    │
+│  │             │    │ - PostgreSQL     │    │
+│  └─────────────┘    │ - Redis          │    │
+│                     │ - Nginx          │    │
+│                     └──────────────────┘    │
+│                            │                │
+│                     ┌──────┴───────┐        │
+│                     │  AWS S3      │        │
+│                     │  (Storage)   │        │
+│                     └──────────────┘        │
+└─────────────────────────────────────────────┘
+8.2 Checklist Deployment
+text
+□ Setup Docker production build
+□ Setup CI/CD pipeline (GitHub Actions)
+□ Setup staging environment
+□ Setup production environment
+□ Setup SSL certificates
+□ Setup domain & DNS
+□ Setup monitoring (PM2 / Grafana)
+□ Setup logging (Winston / ELK)
+□ Setup backup (DB auto backup)
+□ Setup error tracking (Sentry)
+□ Load testing trước khi go-live
+□ Database migration production
+□ Seed initial data (admin account, categories,...)
+PHASE 9: POST-LAUNCH (Ongoing)
+
+text
+□ Monitor logs & errors
+□ Analytics setup (Google Analytics)
+□ SEO monitoring
+□ Performance monitoring
+□ User feedback collection
+□ Bug fixes
+□ Feature enhancements
+□ A/B testing
+📋 TỔNG KẾT TIMELINE
+
+text
+┌──────────┬────────────────────────────────────┬──────────┐
+│  Phase   │           Công việc                │ Thời gian│
+├──────────┼────────────────────────────────────┼──────────┤
+│ Phase 0  │ Chọn Tech Stack                    │  1 ngày  │
+│ Phase 1  │ Setup Project & Structure          │  3 ngày  │
+│ Phase 2  │ Database Design                    │  3 ngày  │
+│ Phase 3  │ Backend API Development            │  3 tuần  │
+│ Phase 4  │ Frontend User                      │  4 tuần  │
+│ Phase 5  │ Admin Dashboard                    │  3 tuần  │
+│ Phase 6  │ Integration & Testing              │  1 tuần  │
+│ Phase 7  │ Optimization & Security            │  1 tuần  │
+│ Phase 8  │ Deployment                         │  1 tuần  │
+│ Phase 9  │ Post-launch                        │ Ongoing  │
+├──────────┼────────────────────────────────────┼──────────┤
+│ TỔNG     │                                    │ ~13 tuần │
+│          │                                    │ (~3 thg) │
+└──────────┴────────────────────────────────────┴──────────┘
+
+* Note: Phase 4 & 5 có thể chạy song song với Phase 3
+  → Rút ngắn còn ~9-10 tuần nếu FE & BE làm song song
+💡 MẸO QUAN TRỌNG
+
+text
+1. 🎯 MVP First: Làm tính năng cốt lõi trước, polish sau
+2. 📝 API-First: Design API trước, FE và BE code song song
+3. 🔄 Git Flow: main → develop → feature branches
+4. 📖 Document: README, API docs, code comments
+5. 🧪 Test sớm: Đừng để cuối mới test
+6. 🔒 Security từ đầu: Đừng "thêm sau"
+7. 📱 Mobile-first: Design responsive từ đầu
+8. ⚡ Commit nhỏ & thường xuyên
