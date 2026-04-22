@@ -1,266 +1,341 @@
 'use client';
 
 import { useState } from 'react';
-import { Minus, Plus, Trash2, CreditCard, Smartphone, ShieldCheck, Lock, Award, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { CreditCard, Lock, ShieldCheck, Shield } from 'lucide-react';
 
-const cartItems = [
-  {
-    id: 1,
-    name: 'AERO-SPEED PRO 900',
-    specs: 'Tension: 28 lbs   Weight: 4U (83G)',
-    price: 245,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: 'V-DRIVE COURT ELITE',
-    specs: 'Size: 10.5 US   Color: Racing Red',
-    price: 160,
-    quantity: 1,
-  },
+const items = [
+  { name: 'Vector X1 Pro', variant: 'BG80 · G5 · 28 lbs', price: 265 },
+  { name: 'Pulse 800 Pro', variant: 'Nano 99 · G6 · 26 lbs', price: 240 },
 ];
+
+function Field({
+  label,
+  type = 'text',
+  placeholder,
+  className = '',
+}: {
+  label: string;
+  type?: string;
+  placeholder?: string;
+  className?: string;
+}) {
+  return (
+    <label className={`block ${className}`}>
+      <span className="block mb-1.5 font-mono text-[10px] tracking-[0.1em] uppercase text-volta-ink-3">
+        {label}
+      </span>
+      <input
+        type={type}
+        placeholder={placeholder}
+        className="w-full py-3 px-3.5 border border-volta-line rounded text-[14px] bg-white outline-none transition-colors focus:border-volta-ink focus:ring-1 focus:ring-volta-ink/10"
+      />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  options,
+  className = '',
+}: {
+  label: string;
+  options: string[];
+  className?: string;
+}) {
+  return (
+    <label className={`block ${className}`}>
+      <span className="block mb-1.5 font-mono text-[10px] tracking-[0.1em] uppercase text-volta-ink-3">
+        {label}
+      </span>
+      <select className="w-full py-3 px-3.5 border border-volta-line rounded text-[14px] bg-white outline-none transition-colors focus:border-volta-ink focus:ring-1 focus:ring-volta-ink/10 appearance-none">
+        {options.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function StepCard({
+  step,
+  title,
+  children,
+}: {
+  step: number;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-white border border-volta-line rounded-lg p-7 mb-4">
+      <div className="flex items-center gap-3.5 mb-5">
+        <span className="w-7 h-7 bg-volta-ink text-white font-mono text-[11px] rounded flex items-center justify-center">
+          {step}
+        </span>
+        <h2 className="font-heading font-bold text-[18px] tracking-[0.02em] uppercase">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 export default function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'express'>('standard');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'mobile' | 'wallet'>('card');
-  const [form, setForm] = useState({
-    firstName: 'ALEXANDER',
-    lastName: 'STRICKLAND',
-    address: '',
-    city: '',
-    postalCode: '',
-    cardNumber: '',
-    expiry: '',
-    cvc: '',
-  });
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal' | 'apple'>('card');
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = shippingMethod === 'express' ? 25 : 0;
-  const tax = subtotal * 0.08;
+  const subtotal = items.reduce((s, i) => s + i.price, 0);
+  const shipping = shippingMethod === 'express' ? 18 : 0;
+  const tax = Math.round(subtotal * 0.08 * 100) / 100;
   const total = subtotal + shipping + tax;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
   return (
-    <div className="bg-kinetic-bg min-h-screen">
-      <div className="max-w-[1280px] mx-auto px-8 py-12">
+    <div className="bg-volta-bg min-h-screen">
+      <div className="max-w-[1280px] mx-auto px-6 py-16 md:py-24">
         {/* Header */}
-        <div className="mb-10">
-          <p className="font-heading font-bold text-xs text-kinetic-green tracking-[2.4px] uppercase">
-            Your Performance Kit
-          </p>
-          <h1 className="font-heading font-bold text-5xl text-kinetic-text tracking-tighter uppercase mt-2">
-            Checkout
-          </h1>
-        </div>
+        <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-3">
+          Secure checkout
+        </p>
+        <h1 className="font-heading font-bold text-[clamp(48px,7vw,88px)] tracking-[-0.03em] leading-[0.95] mb-12">
+          Checkout.
+        </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left - Form */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Cart Items */}
-            <div>
-              <h2 className="font-heading font-bold text-base text-kinetic-text uppercase tracking-[0.5px] mb-4">
-                Cart Items ({String(cartItems.length).padStart(2, '0')})
-              </h2>
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="bg-white p-6 flex gap-6">
-                    <div className="w-20 h-20 bg-kinetic-bg-alt flex-shrink-0 rounded" />
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-heading font-bold text-base text-kinetic-text uppercase">{item.name}</h3>
-                          <p className="font-sans text-xs text-kinetic-text-muted mt-1">
-                            <span className="inline-block w-2 h-2 bg-kinetic-blue rounded-full mr-1 align-middle" />
-                            {item.specs}
-                          </p>
-                        </div>
-                        <span className="font-heading font-bold text-lg text-kinetic-blue">${item.price.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center mt-4">
-                        <div className="flex items-center gap-3 border border-kinetic-border px-3 py-1">
-                          <button className="text-kinetic-text-muted hover:text-kinetic-text"><Minus size={14} /></button>
-                          <span className="font-sans font-bold text-sm w-6 text-center">{item.quantity}</span>
-                          <button className="text-kinetic-text-muted hover:text-kinetic-text"><Plus size={14} /></button>
-                        </div>
-                        <button className="flex items-center gap-1.5 text-kinetic-text-muted hover:text-red-500 text-xs font-sans font-bold uppercase tracking-[0.5px]">
-                          <Trash2 size={14} /> Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        {/* 2-column grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 items-start">
+          {/* Left — Form Steps */}
+          <div>
+            {/* Step 1 — Contact */}
+            <StepCard step={1} title="Contact">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="Email" type="email" placeholder="you@example.com" />
+                <Field label="Phone" type="tel" placeholder="+1 (555) 000-0000" />
               </div>
-            </div>
+            </StepCard>
 
-            {/* Shipping Destination */}
-            <div className="bg-white p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-7 h-7 bg-kinetic-green text-white text-xs font-bold flex items-center justify-center rounded">01</span>
-                <h2 className="font-heading font-bold text-base text-kinetic-text uppercase tracking-[0.5px]">
-                  Shipping Destination
-                </h2>
+            {/* Step 2 — Shipping Address */}
+            <StepCard step={2} title="Shipping address">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <Field label="First name" placeholder="John" />
+                <Field label="Last name" placeholder="Doe" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">First Name</label>
-                  <input name="firstName" value={form.firstName} onChange={handleInputChange} className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text focus:outline-none focus:border-kinetic-blue" />
-                </div>
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Last Name</label>
-                  <input name="lastName" value={form.lastName} onChange={handleInputChange} className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text focus:outline-none focus:border-kinetic-blue" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Address Line 1</label>
-                  <input name="address" value={form.address} onChange={handleInputChange} placeholder="Street Address, P.O. Box" className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/50 focus:outline-none focus:border-kinetic-blue" />
-                </div>
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">City</label>
-                  <input name="city" value={form.city} onChange={handleInputChange} className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text focus:outline-none focus:border-kinetic-blue" />
-                </div>
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Postal Code</label>
-                  <input name="postalCode" value={form.postalCode} onChange={handleInputChange} className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text focus:outline-none focus:border-kinetic-blue" />
-                </div>
+              <Field label="Address" placeholder="123 Main St" className="mb-4" />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <Field label="City" placeholder="New York" />
+                <Field label="State / Province" placeholder="NY" />
+                <Field label="Postal code" placeholder="10001" />
               </div>
-            </div>
+              <SelectField
+                label="Country"
+                options={['United States', 'Canada', 'United Kingdom', 'Australia', 'Japan']}
+              />
+            </StepCard>
 
-            {/* Shipping Method */}
-            <div className="bg-white p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="w-7 h-7 bg-kinetic-green text-white text-xs font-bold flex items-center justify-center rounded">02</span>
-                <h2 className="font-heading font-bold text-base text-kinetic-text uppercase tracking-[0.5px]">
-                  Shipping Method
-                </h2>
-              </div>
-              <div className="space-y-4">
-                <label className="flex items-center justify-between cursor-pointer p-4 border border-kinetic-border hover:border-kinetic-blue transition-colors">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      checked={shippingMethod === 'standard'}
-                      onChange={() => setShippingMethod('standard')}
-                      className="w-4 h-4 accent-kinetic-green"
-                    />
-                    <div>
-                      <p className="font-sans font-bold text-sm text-kinetic-text uppercase">Standard Delivery</p>
-                      <p className="font-sans text-xs text-kinetic-text-muted">3-5 Business Days</p>
-                    </div>
-                  </div>
-                  <span className="font-heading font-bold text-sm text-kinetic-green uppercase">Free</span>
-                </label>
-                <label className="flex items-center justify-between cursor-pointer p-4 border border-kinetic-border hover:border-kinetic-blue transition-colors">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      checked={shippingMethod === 'express'}
-                      onChange={() => setShippingMethod('express')}
-                      className="w-4 h-4 accent-kinetic-green"
-                    />
-                    <div>
-                      <p className="font-sans font-bold text-sm text-kinetic-text uppercase">Express Velocity</p>
-                      <p className="font-sans text-xs text-kinetic-text-muted">Next Day Priority</p>
-                    </div>
-                  </div>
-                  <span className="font-heading font-bold text-sm text-kinetic-text">$25.00</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Right - Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white p-8 sticky top-28">
-              <h2 className="font-heading font-bold text-2xl text-kinetic-text uppercase tracking-tight mb-6">
-                Order Summary
-              </h2>
-
-              <div className="space-y-3 text-sm font-sans">
-                <div className="flex justify-between">
-                  <span className="text-kinetic-text-muted uppercase tracking-[0.5px]">Subtotal</span>
-                  <span className="font-bold text-kinetic-text">${subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-kinetic-text-muted uppercase tracking-[0.5px]">Estimated Shipping</span>
-                  <span className="font-bold text-kinetic-green">{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-kinetic-text-muted uppercase tracking-[0.5px]">Estimated Tax</span>
-                  <span className="font-bold text-kinetic-text">${tax.toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-kinetic-border/20 mt-4 pt-4 flex justify-between items-baseline">
-                <span className="font-heading font-bold text-base text-kinetic-text uppercase">Total</span>
-                <span className="font-heading font-bold text-3xl text-kinetic-green">${total.toFixed(2)}</span>
-              </div>
-
-              {/* Payment Method */}
-              <div className="mt-6">
-                <p className="font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-3">
-                  Secure Payment
-                </p>
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  {[
-                    { key: 'card' as const, icon: <CreditCard size={16} />, label: 'Card' },
-                    { key: 'mobile' as const, icon: <Smartphone size={16} />, label: 'Mobile' },
-                    { key: 'wallet' as const, icon: <CreditCard size={16} />, label: 'Wallet' },
-                  ].map((method) => (
-                    <button
-                      key={method.key}
-                      onClick={() => setPaymentMethod(method.key)}
-                      className={`py-3 flex items-center justify-center border transition-colors ${
-                        paymentMethod === method.key
-                          ? 'border-kinetic-blue bg-kinetic-blue/5'
-                          : 'border-kinetic-border hover:border-kinetic-blue'
+            {/* Step 3 — Shipping Method */}
+            <StepCard step={3} title="Shipping method">
+              <div className="space-y-3">
+                {/* Standard */}
+                <button
+                  type="button"
+                  onClick={() => setShippingMethod('standard')}
+                  className={`w-full text-left grid grid-cols-[20px_1fr_auto] gap-3.5 py-4 px-4 border rounded cursor-pointer transition-colors ${
+                    shippingMethod === 'standard'
+                      ? 'border-volta-ink bg-volta-ink/[0.03]'
+                      : 'border-volta-line'
+                  }`}
+                >
+                  <span className="pt-0.5">
+                    <span
+                      className={`block w-[18px] h-[18px] border-[1.5px] rounded-full relative ${
+                        shippingMethod === 'standard' ? 'border-volta-ink' : 'border-volta-ink-4'
                       }`}
                     >
-                      <span className="text-kinetic-text">{method.icon}</span>
-                    </button>
-                  ))}
-                </div>
+                      {shippingMethod === 'standard' && (
+                        <span className="absolute inset-[3px] bg-volta-ink rounded-full" />
+                      )}
+                    </span>
+                  </span>
+                  <span>
+                    <span className="block text-[14px] font-medium">Standard</span>
+                    <span className="block text-[12px] text-volta-ink-3 mt-0.5">
+                      5–7 business days
+                    </span>
+                  </span>
+                  <span className="text-[14px] font-medium text-volta-accent-ink">Free</span>
+                </button>
 
-                <div className="space-y-3">
-                  <div>
-                    <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-1.5">Card Number</label>
-                    <input name="cardNumber" value={form.cardNumber} onChange={handleInputChange} placeholder="**** **** **** ****" className="w-full bg-kinetic-bg-alt border border-kinetic-border/30 px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/40 focus:outline-none focus:border-kinetic-blue" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-1.5">Expiry</label>
-                      <input name="expiry" value={form.expiry} onChange={handleInputChange} placeholder="MM / YY" className="w-full bg-kinetic-bg-alt border border-kinetic-border/30 px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/40 focus:outline-none focus:border-kinetic-blue" />
-                    </div>
-                    <div>
-                      <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-1.5">CVC</label>
-                      <input name="cvc" value={form.cvc} onChange={handleInputChange} placeholder="***" className="w-full bg-kinetic-bg-alt border border-kinetic-border/30 px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/40 focus:outline-none focus:border-kinetic-blue" />
-                    </div>
-                  </div>
-                </div>
+                {/* Express */}
+                <button
+                  type="button"
+                  onClick={() => setShippingMethod('express')}
+                  className={`w-full text-left grid grid-cols-[20px_1fr_auto] gap-3.5 py-4 px-4 border rounded cursor-pointer transition-colors ${
+                    shippingMethod === 'express'
+                      ? 'border-volta-ink bg-volta-ink/[0.03]'
+                      : 'border-volta-line'
+                  }`}
+                >
+                  <span className="pt-0.5">
+                    <span
+                      className={`block w-[18px] h-[18px] border-[1.5px] rounded-full relative ${
+                        shippingMethod === 'express' ? 'border-volta-ink' : 'border-volta-ink-4'
+                      }`}
+                    >
+                      {shippingMethod === 'express' && (
+                        <span className="absolute inset-[3px] bg-volta-ink rounded-full" />
+                      )}
+                    </span>
+                  </span>
+                  <span>
+                    <span className="block text-[14px] font-medium">Express</span>
+                    <span className="block text-[12px] text-volta-ink-3 mt-0.5">
+                      1–2 business days
+                    </span>
+                  </span>
+                  <span className="text-[14px] font-medium">$18</span>
+                </button>
               </div>
+            </StepCard>
 
-              <button
-                className="w-full mt-6 py-4 flex items-center justify-center gap-2 text-white font-heading font-bold text-sm tracking-[1.4px] uppercase"
-                style={{ backgroundImage: 'linear-gradient(135deg, #00538f 0%, #006cb7 100%)' }}
-              >
-                Execute Order <Zap size={14} />
-              </button>
-
-              <div className="flex items-center justify-center gap-6 mt-6">
-                {[
-                  { icon: <ShieldCheck size={16} />, label: 'SSL Secure' },
-                  { icon: <Lock size={16} />, label: 'Encrypted' },
-                  { icon: <Award size={16} />, label: 'Certified' },
-                ].map((badge) => (
-                  <div key={badge.label} className="flex flex-col items-center gap-1 text-kinetic-text-muted">
-                    {badge.icon}
-                    <span className="text-[9px] font-sans uppercase tracking-[0.5px]">{badge.label}</span>
-                  </div>
+            {/* Step 4 — Payment */}
+            <StepCard step={4} title="Payment">
+              {/* Payment tabs */}
+              <div className="grid grid-cols-3 gap-2 mb-6">
+                {(
+                  [
+                    {
+                      key: 'card',
+                      label: 'Card',
+                      icon: (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-[18px] h-[18px]">
+                          <rect x="2" y="6" width="20" height="12" rx="2" />
+                          <path d="M2 10h20" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      key: 'paypal',
+                      label: 'PayPal',
+                      icon: (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-[18px] h-[18px]">
+                          <path d="M7 18l2-12h6a3 3 0 0 1 0 6h-3l-1 6z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      key: 'apple',
+                      label: 'Apple Pay',
+                      icon: (
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
+                          <path d="M16 3c0 1.4-.6 2.6-1.5 3.5-1 1-2.2 1.8-3.5 1.7-.2-1.3.4-2.7 1.3-3.5.9-1 2.4-1.7 3.7-1.7zM20 17c-.6 1.5-1 2.2-1.8 3.5-1.2 1.8-2.8 4-4.8 4-1.8 0-2.3-1.2-4.7-1.1-2.4 0-3 1.2-4.8 1.1-2 0-3.5-2-4.7-3.8-3.4-5.1-3.7-11.1-1.6-14.3 1.5-2.3 3.8-3.6 6-3.6 2.2 0 3.6 1.2 5.4 1.2 1.8 0 2.9-1.2 5.4-1.2 1.9 0 3.9 1 5.4 2.8-4.8 2.6-4 9.4 0 11.4z" />
+                        </svg>
+                      ),
+                    },
+                  ] as const
+                ).map(({ key, label, icon }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setPaymentMethod(key)}
+                    className={`flex items-center justify-center gap-2 py-3.5 border rounded font-mono text-[11px] tracking-[0.08em] uppercase transition-colors cursor-pointer ${
+                      paymentMethod === key
+                        ? 'border-volta-ink text-volta-ink bg-volta-bg-2 shadow-[0_0_0_1px_var(--color-volta-ink)_inset]'
+                        : 'border-volta-line text-volta-ink-2 hover:border-volta-ink-4 hover:text-volta-ink'
+                    }`}
+                  >
+                    {icon}
+                    {label}
+                  </button>
                 ))}
               </div>
+
+              {paymentMethod === 'card' && (
+                <div>
+                  <Field label="Card number" placeholder="4242 4242 4242 4242" className="mb-4" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Expiry" placeholder="MM / YY" />
+                    <Field label="CVC" placeholder="123" />
+                  </div>
+                </div>
+              )}
+
+              {paymentMethod === 'paypal' && (
+                <p className="text-[14px] text-volta-ink-3">
+                  You will be redirected to PayPal to complete your payment.
+                </p>
+              )}
+
+              {paymentMethod === 'apple' && (
+                <p className="text-[14px] text-volta-ink-3">
+                  Confirm payment with Apple Pay on the next step.
+                </p>
+              )}
+            </StepCard>
+          </div>
+
+          {/* Right — Order Summary */}
+          <div className="bg-white border border-volta-line rounded-lg p-6 sticky top-24">
+            <h2 className="font-heading font-bold text-[18px] pb-4 mb-4 border-b border-volta-line">
+              Order summary
+            </h2>
+
+            {/* Line items */}
+            <div className="space-y-0">
+              {items.map((item) => (
+                <div
+                  key={item.name}
+                  className="grid grid-cols-[48px_1fr_auto] gap-2.5 py-2.5 border-b border-volta-line-2"
+                >
+                  <div className="w-12 h-12 bg-volta-bg-2 rounded" />
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-medium truncate">{item.name}</p>
+                    <p className="font-mono text-[10px] tracking-[0.06em] text-volta-ink-3 mt-0.5">
+                      {item.variant}
+                    </p>
+                  </div>
+                  <span className="text-[14px] font-medium">${item.price}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="mt-4 space-y-2 text-[14px]">
+              <div className="flex justify-between">
+                <span className="text-volta-ink-3">Subtotal</span>
+                <span>${subtotal}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-volta-ink-3">Shipping</span>
+                <span>{shipping === 0 ? 'Free' : `$${shipping}`}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-volta-ink-3">Tax</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-bold pt-3 mt-3 border-t border-volta-line">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Place order */}
+            <button
+              type="button"
+              className="w-full py-4 mt-6 bg-volta-ink text-white font-heading font-medium text-[13px] tracking-[0.08em] uppercase rounded cursor-pointer transition-opacity hover:opacity-90"
+            >
+              Place order
+            </button>
+
+            {/* Security badges */}
+            <div className="flex items-center justify-center gap-5 mt-5">
+              <span className="flex items-center gap-1.5 text-volta-ink-3 text-[11px] font-mono">
+                <Lock size={14} /> Encrypted
+              </span>
+              <span className="flex items-center gap-1.5 text-volta-ink-3 text-[11px] font-mono">
+                <ShieldCheck size={14} /> Verified
+              </span>
+              <span className="flex items-center gap-1.5 text-volta-ink-3 text-[11px] font-mono">
+                <Shield size={14} /> Secure
+              </span>
             </div>
           </div>
         </div>

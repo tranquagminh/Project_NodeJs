@@ -1,182 +1,219 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-const timeline = [
-  { year: '2012', title: 'Foundation', desc: 'Incorporated in the Nanostructures Lab of the Switzerland Innovation Centre with our founding blend of badminton engineering.' },
-  { year: '2016', title: 'Global Partnership', desc: 'First partnership signed with the Asian Badminton Confederation for high-speed shuttlecock & racquet innovation.' },
-  { year: '2020', title: 'Olympic Promise', desc: 'Awarded Olympic licensing rights for competition-class rackets after Kinetic composites achieved independent third-party fusion validation testing.' },
-  { year: '2024', title: 'Precision Series', desc: 'Launch of the Precision Series featuring NAMD carbon neural integration for real-time ballistic feedback during training sessions.' },
+const stats = [
+  { value: "6", label: "Years of R&D" },
+  { value: "24", label: "Frames in the range" },
+  { value: "11", label: "Tour players" },
+  { value: "0.3", label: "mm shaft tolerance" },
 ];
 
-const athletes = [
-  { name: 'HIROKI SATO', img: '/images/athlete-hiroki.jpg' },
-  { name: 'ELENA ROSSI', img: '/images/athlete-elena.jpg' },
-  { name: 'LIAM CHEN', img: '/images/athlete-liam.jpg' },
+const values = [
+  {
+    num: "01",
+    title: "Measure everything",
+    desc: "If we can't prove a material change with a number, we don't ship it. Every claim we make is backed by repeatable lab data and on-court testing.",
+  },
+  {
+    num: "02",
+    title: "Player-first design",
+    desc: "Every prototype goes through touring players before production. Their feedback shapes stiffness profiles, balance points, and grip geometry.",
+  },
+  {
+    num: "03",
+    title: "Transparent sourcing",
+    desc: "We publish our full material chain — from raw graphite supplier to finished frame — so players know exactly what they're swinging.",
+  },
+];
+
+const timeline = [
+  {
+    year: "2019",
+    title: "University composites lab",
+    desc: "Three engineering students begin testing shaft geometries using aerospace-grade carbon prepreg in a shared university lab.",
+  },
+  {
+    year: "2021",
+    title: "First prototype",
+    desc: "Vector 01 prototype tested by four national squad players. Feedback drives a complete redesign of the throat geometry.",
+  },
+  {
+    year: "2023",
+    title: "Official launch",
+    desc: "Volta ships its first 24-frame range to 12 countries. Direct-to-player model keeps prices 30 % below legacy brands.",
+  },
+  {
+    year: "2025",
+    title: "Tour debut",
+    desc: "Six players now compete with Volta frames on the BWF tour. Two podium finishes in the opening quarter.",
+  },
 ];
 
 export default function AboutPage() {
   return (
-    <div className="bg-kinetic-bg">
-      {/* Hero Section */}
-      <section className="relative bg-kinetic-blue min-h-[500px] flex items-center overflow-hidden">
-        <div className="absolute inset-0 opacity-30 bg-[url('/images/about-hero.jpg')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-kinetic-blue via-kinetic-blue/70 to-transparent" />
-        <div className="relative max-w-[1280px] mx-auto px-8 w-full py-24">
-          <p className="font-heading font-bold text-xs text-kinetic-green-light tracking-[2.4px] uppercase mb-4">
-            The Kinetic Engineering
+    <>
+      {/* ── Hero ── */}
+      <section className="bg-volta-ink text-white py-[100px] pb-20 relative overflow-hidden">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent mb-6">
+            Our story
           </p>
-          <h1 className="font-heading font-bold text-[64px] lg:text-[96px] leading-none text-white tracking-tighter uppercase">
-            PRECISION<br />
-            <span className="text-kinetic-green-light">IN MOTION.</span>
+          <h1 className="font-heading font-bold text-[clamp(56px,8vw,128px)] tracking-[-0.035em] leading-[0.95] max-w-[14ch]">
+            We started with one question: why do rackets still feel the same?
           </h1>
-          <p className="mt-6 text-kinetic-blue-pale text-lg leading-7 max-w-lg opacity-90">
-            We don&apos;t just manufacture a gear. We engineer kinetic energy. Every stroke, drive, and flick is a result of calculated physics perfected between lab sessions and live courts.
+          <p className="text-white/80 text-[clamp(16px,1.4vw,20px)] leading-relaxed max-w-[640px] mt-8">
+            Volta is a performance badminton brand built on composites
+            engineering, player data, and the belief that equipment should evolve
+            as fast as the sport.
           </p>
-          <div className="flex gap-4 mt-8">
-            <Link
-              href="/products"
-              className="inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-sm text-white tracking-[0.8px] uppercase rounded"
-              style={{ backgroundImage: 'linear-gradient(135deg, #00538f 0%, #006cb7 100%)' }}
-            >
-              Explore Labs
-            </Link>
-            <button className="inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-sm text-white tracking-[0.8px] uppercase rounded border border-white/20 backdrop-blur-sm bg-white/10 hover:bg-white/20 transition-colors">
-              Watch Theory
-            </button>
-          </div>
         </div>
       </section>
 
-      {/* Engineering Philosophy */}
-      <section className="px-8 py-24 bg-kinetic-bg-alt">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="aspect-video bg-kinetic-text rounded-lg overflow-hidden" />
+      {/* ── Origin story ── */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-6 grid md:grid-cols-2 gap-16 items-center">
+          {/* Image placeholder */}
+          <div className="aspect-[4/5] bg-volta-bg rounded-[20px] border border-volta-line overflow-hidden" />
+
+          {/* Text */}
           <div>
-            <h2 className="font-heading font-bold text-4xl text-kinetic-text tracking-tighter uppercase italic">
-              Engineering Philosophy
-            </h2>
-            <div className="mt-8 space-y-6">
-              {[
-                { title: 'Structural Severity', desc: 'Full-length ultra HMG carbon graphite with nano resin, achieving unprecedented tensile to flex while without compromising your stability.' },
-                { title: 'Aerodynamic Velocity', desc: 'Our patented Hyper Aero Frame System reduces drag at the head, enabling 12% faster swing speeds for high-intensity smashes.' },
-                { title: 'Precision Feedback', desc: 'Engineered vibration dampening systems provide remarkable tactile feedback, allowing for surgical shuttle placement.' },
-              ].map((item) => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-kinetic-green/10 rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-kinetic-green rounded-full" />
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-sm text-kinetic-text uppercase tracking-wide italic">{item.title}</h4>
-                    <p className="mt-1 text-kinetic-text-muted text-sm leading-6">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Evolution of Kinetic - Timeline */}
-      <section className="px-8 py-24 bg-kinetic-text">
-        <div className="max-w-[1280px] mx-auto">
-          <p className="font-heading font-bold text-xs text-kinetic-green-light tracking-[2.4px] uppercase mb-4">
-            Evolution
-          </p>
-          <h2 className="font-heading font-bold text-5xl text-white tracking-tighter uppercase">
-            Evolution of Kinetic
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
-            {timeline.map((item) => (
-              <div key={item.year} className="border-t-2 border-kinetic-green pt-6">
-                <span className="font-heading font-bold text-4xl text-white/20">{item.year}</span>
-                <h3 className="mt-2 font-heading font-bold text-sm text-kinetic-green-light uppercase tracking-[1px]">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-white/60 text-sm leading-6">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Global Presence */}
-      <section className="px-8 py-24">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="font-heading font-bold text-5xl text-kinetic-text tracking-tighter uppercase">
-              Global Presence
-            </h2>
-            <p className="mt-4 text-kinetic-text-secondary text-base leading-7 max-w-md">
-              Headquartered in Munich, Engineered in Japan, and tested on every major pro-circuit court.
-              Accessible. Kinetic is at the district of disruption across 45 countries.
+            <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-4">
+              Origin · 2019
             </p>
-            <div className="grid grid-cols-2 gap-6 mt-8">
-              {[
-                { value: '120+', label: 'Pro Tour Medals' },
-                { value: '45', label: 'Distribution Countries' },
-                { value: '16M+', label: 'Units Sold' },
-                { value: '0.02%', label: 'Defect Rate' },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="font-heading font-bold text-3xl text-kinetic-blue">{stat.value}</p>
-                  <p className="font-sans text-xs text-kinetic-text-muted uppercase tracking-[0.5px] mt-1">{stat.label}</p>
-                </div>
-              ))}
+            <h2 className="font-heading font-bold text-[clamp(36px,4.5vw,64px)] tracking-[-0.03em] leading-none mb-8">
+              Born in a composites lab, not a boardroom.
+            </h2>
+            <div className="space-y-5 text-volta-ink-2 text-base leading-relaxed">
+              <p>
+                Volta began in a university composites lab in Richmond,
+                Virginia. Three materials-science students noticed the same
+                problem: badminton shafts hadn&apos;t changed in nearly a decade
+                while aerospace carbon technology had leapt forward.
+              </p>
+              <p>
+                They started laying their own prepreg, testing flex profiles on a
+                custom jig, and handing prototypes to local club players. The
+                feedback was unanimous — the feel was different. Cleaner. Faster.
+              </p>
+              <p>
+                Six years later, that lab project is a full performance brand
+                with 24 frames, a growing tour roster, and a direct-to-player
+                model that cuts out the middlemen.
+              </p>
             </div>
           </div>
-          <div className="aspect-square bg-kinetic-text rounded-lg overflow-hidden" />
         </div>
       </section>
 
-      {/* Team Kinetic */}
-      <section className="px-8 py-24 bg-kinetic-bg-alt">
-        <div className="max-w-[1280px] mx-auto text-center">
-          <h2 className="font-heading font-bold text-5xl text-kinetic-text tracking-tighter uppercase">
-            Team Kinetic
-          </h2>
-          <p className="mt-4 text-kinetic-text-muted text-base max-w-lg mx-auto">
-            Meet the elite athletes who push our engineering to the absolute limit. They
-            serve. Kinetic serves harder.
+      {/* ── Stats strip ── */}
+      <section className="border-t border-b border-volta-line">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-2 md:grid-cols-4">
+          {stats.map((s, i) => (
+            <div
+              key={s.label}
+              className={`py-10 px-8 ${
+                i < stats.length - 1 ? "border-r border-volta-line" : ""
+              }`}
+            >
+              <p className="font-heading font-bold text-[clamp(40px,4.5vw,64px)] tracking-[-0.03em] text-volta-ink">
+                {s.value}
+              </p>
+              <p className="font-mono text-[10px] tracking-[0.14em] uppercase text-volta-ink-3 mt-3">
+                {s.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Values ── */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-4">
+            What we value
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            {athletes.map((athlete) => (
-              <div key={athlete.name} className="relative overflow-hidden aspect-[3/4] bg-kinetic-text rounded-lg group">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
-                  <h3 className="font-heading font-bold text-2xl text-white uppercase tracking-tight">
-                    {athlete.name}
-                  </h3>
-                </div>
+          <h2 className="font-heading font-bold text-[clamp(36px,4.5vw,64px)] tracking-[-0.03em] leading-none mb-12">
+            Engineering honesty, not marketing hype.
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {values.map((v) => (
+              <div
+                key={v.num}
+                className="p-8 bg-white border border-volta-line rounded-2xl"
+              >
+                <p className="font-heading font-bold text-[56px] text-volta-accent-ink tracking-[-0.03em] leading-none">
+                  {v.num}
+                </p>
+                <h3 className="font-heading font-semibold text-[22px] mt-5 mb-3">
+                  {v.title}
+                </h3>
+                <p className="text-volta-ink-2 text-[14px] leading-relaxed">
+                  {v.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-kinetic-blue px-8 py-24">
-        <div className="max-w-[1280px] mx-auto text-center">
-          <h2 className="font-heading font-bold text-5xl lg:text-6xl text-white tracking-tighter uppercase leading-tight">
-            Experience the<br />
-            <span className="text-kinetic-green-light">Kinetic Revolution.</span>
-          </h2>
-          <p className="mt-6 text-kinetic-blue-pale text-base max-w-lg mx-auto">
-            Join the thousands of professional and aspiring players who have upgraded their
-            game through precision engineering.
+      {/* ── Timeline ── */}
+      <section className="py-24 bg-volta-bg">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-4">
+            Milestones
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
-            <Link
-              href="/products"
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-kinetic-blue font-heading font-bold text-sm tracking-[0.8px] uppercase rounded hover:bg-white/90 transition-colors"
-            >
-              Shop the Collection
-            </Link>
-            <button className="inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-sm text-white tracking-[0.8px] uppercase rounded border border-white/20 bg-white/10 hover:bg-white/20 transition-colors">
-              Download Tech Specs
-            </button>
+          <h2 className="font-heading font-bold text-[clamp(36px,4.5vw,64px)] tracking-[-0.03em] leading-none">
+            From lab to world tour.
+          </h2>
+
+          <div className="border-l-2 border-volta-line pl-8 mt-8">
+            {timeline.map((t) => (
+              <div key={t.year} className="py-5 relative">
+                <span className="absolute left-[-40px] top-7 w-3.5 h-3.5 rounded-full bg-white border-2 border-volta-ink" />
+                <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-volta-accent-ink">
+                  {t.year}
+                </p>
+                <h3 className="font-heading font-semibold text-[22px] mt-1">
+                  {t.title}
+                </h3>
+                <p className="text-volta-ink-2 text-[14px] max-w-[52ch] mt-1 leading-relaxed">
+                  {t.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
-    </div>
+
+      {/* ── CTA ── */}
+      <section className="bg-volta-ink text-white py-24">
+        <div className="mx-auto max-w-7xl px-6 text-center">
+          <h2 className="font-heading font-bold text-[clamp(36px,4.5vw,64px)] tracking-[-0.03em] leading-none">
+            Ready to feel the difference?
+          </h2>
+          <p className="text-white/70 text-[clamp(16px,1.4vw,20px)] leading-relaxed max-w-[540px] mx-auto mt-6">
+            Explore the full Volta range — engineered for players who care about
+            what&apos;s under the paint.
+          </p>
+
+          <div className="flex items-center justify-center gap-4 mt-10">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 bg-white text-volta-ink font-semibold text-sm px-7 py-3.5 rounded-full hover:bg-white/90 transition"
+            >
+              Shop rackets
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 border border-white/30 text-white font-semibold text-sm px-7 py-3.5 rounded-full hover:border-white/60 transition"
+            >
+              Contact us
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

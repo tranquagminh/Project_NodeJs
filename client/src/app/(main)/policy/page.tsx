@@ -1,261 +1,345 @@
 'use client';
 
 import { useState } from 'react';
-import { Shield, FileText, RotateCcw, Cookie, ChevronRight } from 'lucide-react';
 
-type Section = 'privacy' | 'terms' | 'warranty' | 'cookie';
+const sections = [
+  'Terms of Service',
+  'Privacy Policy',
+  'Returns & Refunds',
+  'Warranty',
+  'Cookies',
+  'Accessibility',
+] as const;
 
-const navItems: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: 'privacy', label: 'Privacy Policy', icon: <Shield size={16} /> },
-  { id: 'terms', label: 'Terms of Service', icon: <FileText size={16} /> },
-  { id: 'warranty', label: 'Warranty & Returns', icon: <RotateCcw size={16} /> },
-  { id: 'cookie', label: 'Cookie Policy', icon: <Cookie size={16} /> },
-];
+type Section = (typeof sections)[number];
 
-export default function PolicyPage() {
-  const [active, setActive] = useState<Section>('privacy');
-
+function SectionHeading({
+  children,
+  first = false,
+}: {
+  children: React.ReactNode;
+  first?: boolean;
+}) {
   return (
-    <div className="bg-kinetic-bg">
-      {/* Hero */}
-      <section className="bg-kinetic-text py-20 pb-16">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <p className="font-heading font-bold text-xs text-kinetic-green-light tracking-[2.4px] uppercase mb-4">
-            Legal Documentation
-          </p>
-          <h1 className="font-heading font-bold text-5xl lg:text-[64px] leading-none text-white tracking-tighter uppercase">
-            Policy & Legal<br />
-            <span className="text-kinetic-green-light">Center</span>
-          </h1>
-          <p className="mt-4 text-white/60 text-base max-w-lg">
-            Transparent governance for the Kinetic ecosystem. Review the policies that protect
-            your data, purchases, and rights as part of our performance community.
-          </p>
-        </div>
-      </section>
+    <h2
+      className={`font-heading font-semibold text-[26px] tracking-[-0.02em] text-volta-ink pt-6 ${
+        first ? '' : 'border-t border-volta-line mt-12'
+      }`}
+    >
+      {children}
+    </h2>
+  );
+}
 
-      {/* Content */}
-      <section className="px-8 py-16">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12">
-          {/* Sidebar Nav */}
-          <nav className="lg:sticky lg:top-28 lg:self-start space-y-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActive(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm font-sans font-medium transition-colors ${
-                  active === item.id
-                    ? 'bg-kinetic-blue text-white'
-                    : 'text-kinetic-text-secondary hover:bg-kinetic-bg-alt'
-                }`}
-              >
-                {item.icon}
-                {item.label}
-                <ChevronRight size={14} className="ml-auto opacity-50" />
-              </button>
-            ))}
-            <p className="px-4 pt-6 text-[10px] text-kinetic-text-muted uppercase tracking-wider">
-              Last Updated: March 2025
-            </p>
-          </nav>
+function SubHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="font-heading font-semibold text-[17px] mt-7 mb-2.5">
+      {children}
+    </h3>
+  );
+}
 
-          {/* Policy Content */}
-          <div className="min-w-0">
-            {active === 'privacy' && <PrivacyPolicy />}
-            {active === 'terms' && <TermsOfService />}
-            {active === 'warranty' && <WarrantyReturns />}
-            {active === 'cookie' && <CookiePolicy />}
-          </div>
-        </div>
-      </section>
+function P({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-volta-ink-2 text-[15px] leading-[1.7] mb-3.5">
+      {children}
+    </p>
+  );
+}
+
+function UL({ children }: { children: React.ReactNode }) {
+  return (
+    <ul className="text-volta-ink-2 text-[15px] leading-[1.7] pl-5 mb-3.5 list-disc">
+      {children}
+    </ul>
+  );
+}
+
+function Callout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="py-5 px-6 bg-volta-bg border-l-[3px] border-volta-accent-ink rounded-md text-[14px] text-volta-ink leading-relaxed my-5">
+      {children}
     </div>
   );
 }
 
-/* --- Privacy Policy --- */
-function PrivacyPolicy() {
-  return (
-    <article className="space-y-12">
-      <div>
-        <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">Privacy Policy</h2>
-        <p className="mt-4 text-kinetic-text-secondary text-sm leading-7 max-w-2xl">
-          Kinetic is committed to protecting the personal data of our athletes, customers, and partners.
-          This policy outlines how we collect, process, and safeguard information within the Kinetic ecosystem.
-        </p>
-      </div>
-
-      <PolicyBlock title="Data Collection" number="01">
-        <p>We collect personal information that you provide directly when creating a Kinetic account, placing orders,
-          or contacting our support team. This includes your name, email address, shipping address, payment details,
-          and any communication you send to us.</p>
-        <p>We also automatically collect certain technical data when you interact with our digital platforms,
-          including device information, IP address, browser type, and usage patterns.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Security Protocol" number="02">
-        <p>All data transmissions are protected using 256-bit TLS encryption. Payment processing is handled through
-          PCI DSS Level 1 certified partners. We never store complete credit card numbers on our servers.</p>
-        <p>Access to personal data is restricted to authorized personnel on a need-to-know basis, with all access
-          logged and audited quarterly.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Information Usage" number="03">
-        <p>Your personal data is used to fulfill orders, provide customer support, improve our products and services,
-          and send relevant communications about Kinetic products and events (with your consent).</p>
-        <p>We do not sell, rent, or trade personal information to third parties for marketing purposes.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Biometric Integrity" number="04">
-        <p>Kinetic does not collect biometric data (fingerprints, facial recognition, gait analysis) through our
-          e-commerce platforms. Any performance analytics from Kinetic-connected devices are processed locally on
-          the user&apos;s device and are not transmitted to our servers unless explicitly opted in.</p>
-      </PolicyBlock>
-    </article>
-  );
-}
-
-/* --- Terms of Service --- */
 function TermsOfService() {
   return (
-    <article className="space-y-12">
-      <div>
-        <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">Terms of Service</h2>
-        <p className="mt-4 text-kinetic-text-secondary text-sm leading-7 max-w-2xl">
-          By accessing and using the Kinetic platform, you agree to be bound by these terms. Please review them
-          carefully before making purchases or creating an account.
-        </p>
-      </div>
+    <div>
+      <SectionHeading first>Terms of Service</SectionHeading>
 
-      <PolicyBlock title="Usage Rights" number="01">
-        <p>Kinetic grants you a limited, non-exclusive, non-transferable right to access and use the Kinetic platform
-          for personal, non-commercial purposes. You may browse products, create an account, and place orders for
-          personal use.</p>
-        <p>All content on the platform — including but not limited to text, graphics, logos, product images,
-          engineering specifications, and software — is the intellectual property of Kinetic or its licensors.</p>
-      </PolicyBlock>
+      <SubHeading>Acceptance of terms</SubHeading>
+      <P>
+        By accessing and using the Volta Sport website and services, you accept
+        and agree to be bound by the terms and provisions of this agreement.
+        If you do not agree to abide by these terms, please do not use our
+        services. These terms apply to all visitors, users, and others who
+        access or use the service.
+      </P>
 
-      <PolicyBlock title="Prohibited Acts" number="02">
-        <p>You agree not to: reproduce or redistribute Kinetic content without authorization; use automated systems
-          to scrape or extract data; create fake accounts or impersonate others; attempt to gain unauthorized access
-          to our systems; or use the platform for any illegal purpose.</p>
-        <p>Kinetic reserves the right to suspend or terminate accounts that violate these terms, without prior notice.</p>
-      </PolicyBlock>
-    </article>
+      <SubHeading>Account responsibilities</SubHeading>
+      <P>
+        When you create an account with us, you must provide information that
+        is accurate, complete, and current at all times. Failure to do so
+        constitutes a breach of the terms, which may result in immediate
+        termination of your account.
+      </P>
+      <UL>
+        <li>You are responsible for safeguarding the password used to access the service</li>
+        <li>You agree not to disclose your password to any third party</li>
+        <li>You must notify us immediately upon becoming aware of any breach of security</li>
+        <li>You may not use as a username the name of another person or entity that is not lawfully available for use</li>
+      </UL>
+
+      <SubHeading>Intellectual property</SubHeading>
+      <P>
+        The service and its original content, features, and functionality are
+        and will remain the exclusive property of Volta Sport and its licensors.
+        The service is protected by copyright, trademark, and other laws of
+        both the country and foreign countries.
+      </P>
+
+      <Callout>
+        All product specifications, designs, engineering data, and other
+        technical information displayed on this site are proprietary to Volta
+        Sport and may not be reproduced, used, or disclosed without prior
+        written consent.
+      </Callout>
+    </div>
   );
 }
 
-/* --- Warranty & Returns --- */
-function WarrantyReturns() {
-  const returnsSpecs = [
-    { item: 'Racket Frames', window: '30 days', condition: 'Unstrung, original packaging' },
-    { item: 'Shoes', window: '30 days', condition: 'Unworn, with tags' },
-    { item: 'Apparel', window: '30 days', condition: 'Unworn, with tags' },
-    { item: 'Strings (uncut)', window: '30 days', condition: 'Sealed packaging' },
-    { item: 'Accessories', window: '14 days', condition: 'Unused, original packaging' },
-  ];
+function PrivacyPolicy() {
+  return (
+    <div>
+      <SectionHeading first>Privacy Policy</SectionHeading>
+
+      <SubHeading>What we collect</SubHeading>
+      <P>
+        We collect information you provide directly to us when you create an
+        account, make a purchase, subscribe to our newsletter, or contact our
+        support team. This may include:
+      </P>
+      <UL>
+        <li>Name, email address, and contact information</li>
+        <li>Billing and shipping addresses</li>
+        <li>Payment information (processed securely through our payment providers)</li>
+        <li>Order history and product preferences</li>
+        <li>Communications you send to us</li>
+      </UL>
+
+      <SubHeading>How we use your data</SubHeading>
+      <P>
+        We use the information we collect to provide, maintain, and improve our
+        services, process transactions, send transactional communications, and
+        respond to your comments and questions. We may also use the data to
+        send you marketing communications, which you can opt out of at any
+        time.
+      </P>
+
+      <SubHeading>Third-party sharing</SubHeading>
+      <P>
+        We may share your information with third-party service providers who
+        perform services on our behalf, such as payment processing, shipping,
+        data analysis, email delivery, hosting services, and customer service.
+        These third parties have access to your personal information only to
+        perform these tasks and are obligated not to disclose or use it for
+        any other purpose.
+      </P>
+
+      <Callout>
+        We never sell personal data to third parties. Your information is only
+        shared with service providers essential to fulfilling your orders and
+        improving your experience with Volta Sport.
+      </Callout>
+    </div>
+  );
+}
+
+function ReturnsRefunds() {
+  return (
+    <div>
+      <SectionHeading first>Returns &amp; Refunds</SectionHeading>
+
+      <SubHeading>30-day on-court trial</SubHeading>
+      <P>
+        We believe in our products. That&apos;s why every Volta racket comes
+        with a 30-day on-court trial. If you&apos;re not completely satisfied
+        with your purchase, you can return it within 30 days of delivery for a
+        full refund or exchange. We want you to feel the difference on the
+        court, not just in the store.
+      </P>
+
+      <SubHeading>Return conditions</SubHeading>
+      <UL>
+        <li>Items must be returned within 30 days of the delivery date</li>
+        <li>Rackets may show reasonable signs of on-court use and still be eligible for return</li>
+        <li>Accessories and apparel must be in original, unused condition with tags attached</li>
+        <li>Custom stringing services are non-refundable</li>
+        <li>Sale items are eligible for exchange or store credit only</li>
+      </UL>
+
+      <SubHeading>Refund process</SubHeading>
+      <P>
+        Once your return is received and inspected, we will send you an email
+        to notify you of the approval or rejection of your refund. If approved,
+        your refund will be processed and a credit will automatically be
+        applied to your original method of payment within 5–10 business days.
+      </P>
+    </div>
+  );
+}
+
+function WarrantySection() {
+  return (
+    <div>
+      <SectionHeading first>Warranty</SectionHeading>
+
+      <SubHeading>Frame warranty</SubHeading>
+      <P>
+        All Volta racket frames are covered by a 2-year limited warranty
+        against defects in materials and workmanship from the date of original
+        purchase. This warranty covers structural failures of the frame under
+        normal playing conditions and does not cover cosmetic damage or damage
+        caused by misuse, neglect, or modification.
+      </P>
+
+      <SubHeading>What&apos;s not covered</SubHeading>
+      <UL>
+        <li>Cosmetic damage including scratches, dents, and paint chips from normal play</li>
+        <li>Damage caused by misuse, abuse, or modification of the product</li>
+        <li>Natural wear and tear of strings, grips, and bumper guards</li>
+        <li>Damage resulting from improper stringing or stringing above recommended tension</li>
+        <li>Products purchased from unauthorized retailers</li>
+      </UL>
+
+      <SubHeading>Claiming warranty</SubHeading>
+      <P>
+        To make a warranty claim, contact our support team with your proof of
+        purchase and photos of the defect. Our team will review your claim
+        within 3–5 business days and, if approved, will provide a replacement
+        frame or store credit at our discretion.
+      </P>
+    </div>
+  );
+}
+
+function CookiesSection() {
+  return (
+    <div>
+      <SectionHeading first>Cookies</SectionHeading>
+
+      <SubHeading>Essential cookies</SubHeading>
+      <P>
+        Essential cookies are required for the basic functionality of our
+        website. These cookies enable core features such as security, network
+        management, and account access. You cannot opt out of essential cookies
+        as the website cannot function properly without them.
+      </P>
+
+      <SubHeading>Analytics cookies</SubHeading>
+      <P>
+        We use analytics cookies to understand how visitors interact with our
+        website. These cookies help us measure and improve the performance of
+        our site by collecting information about which pages are visited most
+        often, how visitors navigate between pages, and whether they encounter
+        any error messages. All information these cookies collect is aggregated
+        and anonymous.
+      </P>
+
+      <SubHeading>Managing preferences</SubHeading>
+      <P>
+        You can manage your cookie preferences at any time through your browser
+        settings. Most browsers allow you to refuse or accept cookies, delete
+        existing cookies, and set preferences for certain websites. Please note
+        that disabling certain cookies may limit the functionality of our
+        website.
+      </P>
+    </div>
+  );
+}
+
+function AccessibilitySection() {
+  return (
+    <div>
+      <SectionHeading first>Accessibility</SectionHeading>
+
+      <P>
+        Volta Sport is committed to ensuring digital accessibility for people
+        of all abilities. We are continually improving the user experience for
+        everyone and applying the relevant accessibility standards. Our website
+        strives to conform to the Web Content Accessibility Guidelines (WCAG)
+        2.1, Level AA. We welcome your feedback on the accessibility of our
+        site. If you encounter any accessibility barriers or have suggestions
+        for improvement, please contact us at{' '}
+        <a
+          href="mailto:accessibility@voltasport.com"
+          className="text-volta-accent-ink underline underline-offset-2"
+        >
+          accessibility@voltasport.com
+        </a>
+        .
+      </P>
+    </div>
+  );
+}
+
+function PolicyContent({ active }: { active: Section }) {
+  switch (active) {
+    case 'Terms of Service':
+      return <TermsOfService />;
+    case 'Privacy Policy':
+      return <PrivacyPolicy />;
+    case 'Returns & Refunds':
+      return <ReturnsRefunds />;
+    case 'Warranty':
+      return <WarrantySection />;
+    case 'Cookies':
+      return <CookiesSection />;
+    case 'Accessibility':
+      return <AccessibilitySection />;
+  }
+}
+
+export default function PolicyPage() {
+  const [active, setActive] = useState<Section>('Terms of Service');
 
   return (
-    <article className="space-y-12">
-      <div>
-        <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">Warranty & Returns</h2>
-        <p className="mt-4 text-kinetic-text-secondary text-sm leading-7 max-w-2xl">
-          Kinetic products are engineered for performance and durability. Our warranty and returns policies are
-          designed to give you confidence in every purchase.
+    <div className="bg-volta-bg">
+      <div className="container mx-auto px-6 py-12 pb-24">
+        <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink">
+          Legal
         </p>
-      </div>
+        <h1 className="font-heading font-bold text-[clamp(40px,5vw,64px)] tracking-[-0.03em] leading-[0.95]">
+          Terms &amp; policies
+        </h1>
+        <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-ink-3 mb-10">
+          Last updated: March 2026
+        </p>
 
-      <PolicyBlock title="Racket Frame Warranty" number="01">
-        <p>All Kinetic racket frames carry a 12-month structural warranty from the date of purchase. This covers
-          manufacturing defects in materials and workmanship under normal playing conditions.</p>
-        <p>The warranty does not cover damage caused by misuse, accidental impact, unauthorized modifications,
-          or normal wear and tear. Cosmetic damage (paint chips, scratches) is not covered.</p>
-      </PolicyBlock>
+        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-16">
+          {/* Sidebar Nav */}
+          <nav className="sticky top-6 flex flex-col gap-0.5 self-start">
+            {sections.map((section) => (
+              <button
+                key={section}
+                onClick={() => setActive(section)}
+                className={`py-2.5 px-3.5 rounded-lg text-[14px] font-medium text-left transition-colors ${
+                  active === section
+                    ? 'bg-volta-ink text-white'
+                    : 'text-volta-ink-2 hover:bg-volta-bg hover:text-volta-ink'
+                }`}
+              >
+                {section}
+              </button>
+            ))}
+          </nav>
 
-      <PolicyBlock title="Stringing Policy" number="02">
-        <p>Pre-strung rackets are warranted for the frame only. String tension and durability vary based on
-          playing frequency, technique, and environmental conditions. String breakage is not covered under warranty.</p>
-        <p>For warranty claims on strung rackets, the racket must be re-strung at a Kinetic Authorized Service Center
-          for assessment.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Returns — 30-Day Policy" number="03">
-        <p>Items purchased from Kinetic may be returned within 30 days of delivery for a full refund.
-          Items must be in their original condition, unused, and in original packaging. Custom or personalized
-          items are final sale and cannot be returned.</p>
-      </PolicyBlock>
-
-      {/* Specification Table */}
-      <div>
-        <h3 className="font-heading font-bold text-sm text-kinetic-text-muted tracking-[1px] uppercase mb-4">
-          Technical Specifications for Returns
-        </h3>
-        <div className="border border-kinetic-border">
-          <div className="grid grid-cols-3 bg-kinetic-bg-alt px-4 py-3 border-b border-kinetic-border">
-            <span className="font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase">Item</span>
-            <span className="font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase">Return Window</span>
-            <span className="font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase">Condition</span>
+          {/* Content */}
+          <div className="max-w-[760px]">
+            <PolicyContent active={active} />
           </div>
-          {returnsSpecs.map((row) => (
-            <div key={row.item} className="grid grid-cols-3 px-4 py-3 border-b border-kinetic-border last:border-b-0">
-              <span className="font-sans text-sm text-kinetic-text">{row.item}</span>
-              <span className="font-sans text-sm text-kinetic-text-secondary">{row.window}</span>
-              <span className="font-sans text-sm text-kinetic-text-secondary">{row.condition}</span>
-            </div>
-          ))}
         </div>
-      </div>
-    </article>
-  );
-}
-
-/* --- Cookie Policy --- */
-function CookiePolicy() {
-  return (
-    <article className="space-y-12">
-      <div>
-        <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">Cookie Policy</h2>
-        <p className="mt-4 text-kinetic-text-secondary text-sm leading-7 max-w-2xl">
-          Kinetic uses cookies and similar tracking technologies to enhance your browsing experience,
-          analyze platform usage, and deliver targeted content.
-        </p>
-      </div>
-
-      <PolicyBlock title="Essential Cookies" number="01">
-        <p>These cookies are required for the platform to function correctly. They enable core features such as
-          authentication, shopping cart persistence, and security protocols. Essential cookies cannot be disabled.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Analytics Cookies" number="02">
-        <p>We use analytics cookies to understand how visitors interact with our platform. This data helps us
-          improve product discovery, optimize page performance, and identify technical issues. All analytics
-          data is aggregated and anonymized.</p>
-      </PolicyBlock>
-
-      <PolicyBlock title="Managing Preferences" number="03">
-        <p>You can manage your cookie preferences at any time through your browser settings or by using
-          the Cookie Preferences panel accessible from the footer of every page. Please note that disabling
-          certain cookies may affect platform functionality.</p>
-      </PolicyBlock>
-    </article>
-  );
-}
-
-/* --- Shared Section Block --- */
-function PolicyBlock({
-  title,
-  number,
-  children,
-}: {
-  title: string;
-  number: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex gap-6">
-      <span className="font-heading font-bold text-xs text-kinetic-text-muted/40 mt-1">{number}</span>
-      <div className="flex-1">
-        <h3 className="font-heading font-bold text-lg text-kinetic-text">{title}</h3>
-        <div className="mt-3 space-y-3 text-kinetic-text-secondary text-sm leading-7">{children}</div>
       </div>
     </div>
   );

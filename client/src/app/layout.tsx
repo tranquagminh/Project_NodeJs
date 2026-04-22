@@ -16,8 +16,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "KINETIC | Engineered for Velocity",
-  description: "High performance badminton & racket sports equipment engineered for the elite athlete.",
+  title: "VOLTA — Precision Badminton",
+  description: "Precision badminton equipment, engineered for players who count grams. Since 2016 · Richmond, VA.",
 };
 
 export default function RootLayout({

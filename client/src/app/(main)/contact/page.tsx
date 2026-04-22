@@ -1,252 +1,238 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { MapPin, Phone, Mail, ArrowRight, Shield, Wrench, Truck } from 'lucide-react';
+import { useState } from 'react'
+import { Plus } from 'lucide-react'
 
-const supportCenters = [
+const topics = [
+  'General inquiry',
+  'Order support',
+  'Stringing help',
+  'Returns',
+  'Wholesale',
+  'Press',
+]
+
+const channels = [
   {
-    region: 'Asia Pacific Hub',
-    color: 'bg-kinetic-green',
-    name: 'Tokyo Engineering Center',
-    address: '3-7-1 Yoda-Kojimachi, Minato-ku,\nTokyo 107-0051, Japan',
-    phone: '+81 3 5688 9000',
-    email: 'support.asia@kinetic.pro',
+    eyebrow: 'Email support',
+    title: 'Write to us',
+    description:
+      'For order inquiries, returns, or product questions — email is the fastest way to reach us.',
+    value: 'hello@volta.sport',
+    hours: 'Mon–Fri · 9 am–6 pm EST',
   },
   {
-    region: 'Europe Hub',
-    color: 'bg-kinetic-blue',
-    name: 'Copenhagen Design Lab',
-    address: 'Bredgade 24A,\n1260 København K, Denmark',
-    phone: '+45 33 12 34 56',
-    email: 'support.eu@kinetic.pro',
+    eyebrow: 'Phone',
+    title: 'Call our team',
+    description:
+      'Speak directly with a VOLTA specialist about gear, stringing, or custom orders.',
+    value: '+1 804 555 0142',
+    hours: 'Mon–Fri · 10 am–5 pm EST',
   },
   {
-    region: 'Americas Hub',
-    color: 'bg-kinetic-green',
-    name: 'Irvine Logistics Center',
-    address: '1325 Von Karman Ave,\nIrvine, CA 92612, USA',
-    phone: '+1 949 555 0199',
-    email: 'support.usa@kinetic.pro',
+    eyebrow: 'Visit',
+    title: 'Richmond workshop',
+    description:
+      'Book a stringing session or try frames in person at our flagship location.',
+    value: '1847 Brook Rd, Richmond VA 23220',
   },
-];
+]
 
-const faqItems = [
-  { icon: <Shield size={24} />, title: 'Warranty Activation', desc: 'Register your frame serial number to activate the 12-month Kinetic structural guarantee.' },
-  { icon: <Wrench size={24} />, title: 'Tension Charts', desc: 'Access engineering specifications for optimal string tension based on frame materials.' },
-  { icon: <Truck size={24} />, title: 'Shipping Matrix', desc: 'Detailed lead times and logistics tracking for all international equipment orders.' },
-];
-
-const departments = ['Technical Support', 'Sales & Orders', 'Warranty Claims', 'Partnership Inquiry', 'Media & Press'];
+const faqs = [
+  {
+    question: 'How long does stringing take?',
+    answer:
+      'We hand-string every racket in our Richmond workshop. Standard turnaround is 24–48 hours from the time we receive your frame. Rush service (same-day) is available for an additional fee.',
+  },
+  {
+    question: "What's your return policy?",
+    answer:
+      "You have 30 days to play with any racket. If it doesn't fit your game, send it back in any condition — we'll cover return shipping and issue a full refund.",
+  },
+  {
+    question: 'Do you ship internationally?',
+    answer:
+      'Yes — we ship to 45+ countries. Standard international shipping is free on orders over $250. Duties and taxes are calculated at checkout so there are no surprises on delivery.',
+  },
+  {
+    question: 'Can I visit your workshop?',
+    answer:
+      'Absolutely. Walk-ins are welcome Monday through Saturday, 10 am–6 pm. You can test demo frames, watch our stringers at work, and pick up online orders in person.',
+  },
+]
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    department: 'Technical Support',
-    message: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: integrate with API
-  };
+  const [activeTopic, setActiveTopic] = useState(0)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   return (
-    <div className="bg-kinetic-bg">
+    <main className="max-w-[1120px] mx-auto px-6">
       {/* Hero */}
-      <section className="relative bg-kinetic-blue min-h-[300px] flex items-end overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('/images/contact-hero.jpg')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-kinetic-blue to-transparent" />
-        <div className="relative max-w-[1280px] mx-auto px-8 w-full pb-16 pt-24">
-          <p className="font-heading font-bold text-xs text-kinetic-green-light tracking-[2.4px] uppercase mb-4">
-            Connect With Kinetic
-          </p>
-          <h1 className="font-heading font-bold text-6xl lg:text-[80px] leading-none text-white tracking-tighter uppercase">
-            ENGINEERING<br />
-            <span className="text-kinetic-green-light">SUPPORT</span>
-          </h1>
-          <p className="mt-4 text-kinetic-blue-pale text-base max-w-lg opacity-90">
-            Whether you&apos;re seeking technical specifications or looking to become a certified dealer, our engineering team is ready to assist.
-          </p>
+      <section className="py-20 pb-10">
+        <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-4">
+          Get in touch
+        </p>
+        <h1 className="font-heading font-bold text-[clamp(48px,7vw,96px)] tracking-[-0.03em] leading-[0.95] mb-6">
+          We&apos;d love to hear from&nbsp;you.
+        </h1>
+        <p className="text-volta-ink-2 text-[18px] leading-relaxed max-w-[60ch] mb-10">
+          Whether you need help choosing a racket, want to check on an order, or
+          just want to talk tennis — we&apos;re here for&nbsp;it.
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {topics.map((topic, i) => (
+            <button
+              key={topic}
+              onClick={() => setActiveTopic(i)}
+              className={`py-2.5 px-3.5 border rounded-full font-mono text-[10px] tracking-[0.12em] uppercase cursor-pointer transition-colors ${
+                activeTopic === i
+                  ? 'bg-volta-ink text-white border-volta-ink'
+                  : 'bg-white text-volta-ink-2 border-volta-line hover:border-volta-ink-3'
+              }`}
+            >
+              {topic}
+            </button>
+          ))}
         </div>
       </section>
 
-      {/* Contact Form + Support Centers */}
-      <section className="px-8 py-20">
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Form */}
-          <div>
-            <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">
-              Get in Touch
-            </h2>
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Full Name</label>
-                  <input
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="Ex: Kento Tanaka"
-                    className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/50 focus:outline-none focus:border-kinetic-blue"
-                  />
-                </div>
-                <div>
-                  <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Email Address</label>
-                  <input
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="k.tanaka@kinetic.pro"
-                    className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/50 focus:outline-none focus:border-kinetic-blue"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Department</label>
-                <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text focus:outline-none focus:border-kinetic-blue bg-white"
-                >
-                  {departments.map((dept) => (
-                    <option key={dept} value={dept}>{dept}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block font-sans font-bold text-[10px] text-kinetic-text-muted tracking-[1px] uppercase mb-2">Message</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={5}
-                  placeholder="Describe your technical requirements..."
-                  className="w-full border border-kinetic-border px-4 py-3 font-sans text-sm text-kinetic-text placeholder:text-kinetic-text-muted/50 focus:outline-none focus:border-kinetic-blue resize-none"
+      {/* Contact form + side channels */}
+      <section className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 pb-16">
+        {/* Left — Form card */}
+        <div className="bg-white border border-volta-line rounded-[20px] p-10">
+          <h2 className="font-heading font-semibold text-[22px] mb-1">
+            Send a message
+          </h2>
+          <p className="text-volta-ink-2 text-[14px] mb-8">
+            We typically reply within 24&nbsp;hours.
+          </p>
+
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col gap-6"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-volta-ink-3">
+                  Name
+                </span>
+                <input
+                  type="text"
+                  placeholder="Jane Doe"
+                  className="py-3.5 px-4 border border-volta-line rounded-[10px] text-[15px] outline-none focus:border-volta-accent-ink focus:ring-[3px] focus:ring-volta-accent/25 transition"
                 />
-              </div>
-              <button
-                type="submit"
-                className="inline-flex items-center gap-2 px-8 py-4 text-white font-heading font-bold text-sm tracking-[1.4px] uppercase"
-                style={{ backgroundImage: 'linear-gradient(135deg, #00538f 0%, #006cb7 100%)' }}
-              >
-                Dispatch Message <ArrowRight size={14} />
-              </button>
-            </form>
-          </div>
-
-          {/* Support Centers */}
-          <div>
-            <h2 className="font-heading font-bold text-3xl text-kinetic-text tracking-tight uppercase">
-              Global Support Centers
-            </h2>
-            <div className="mt-8 space-y-8">
-              {supportCenters.map((center) => (
-                <div key={center.name} className="flex gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className={`w-2 h-2 ${center.color} rounded-full`} />
-                  </div>
-                  <div>
-                    <p className="font-sans font-bold text-[10px] text-kinetic-green tracking-[1px] uppercase">{center.region}</p>
-                    <h4 className="font-heading font-bold text-lg text-kinetic-text mt-1">{center.name}</h4>
-                    <p className="font-sans text-sm text-kinetic-text-muted whitespace-pre-line mt-2">{center.address}</p>
-                    <div className="mt-3 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Phone size={12} className="text-kinetic-blue" />
-                        <span className="font-sans text-sm text-kinetic-blue font-bold">{center.phone}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Mail size={12} className="text-kinetic-text-muted" />
-                        <span className="font-sans text-sm text-kinetic-text-muted">{center.email}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-volta-ink-3">
+                  Email
+                </span>
+                <input
+                  type="email"
+                  placeholder="jane@example.com"
+                  className="py-3.5 px-4 border border-volta-line rounded-[10px] text-[15px] outline-none focus:border-volta-accent-ink focus:ring-[3px] focus:ring-volta-accent/25 transition"
+                />
+              </label>
             </div>
-          </div>
+
+            <label className="flex flex-col gap-2">
+              <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-volta-ink-3">
+                Message
+              </span>
+              <textarea
+                rows={5}
+                placeholder="How can we help?"
+                className="py-3.5 px-4 border border-volta-line rounded-[10px] text-[15px] min-h-[140px] resize-y outline-none focus:border-volta-accent-ink focus:ring-[3px] focus:ring-volta-accent/25 transition"
+              />
+            </label>
+
+            <button
+              type="submit"
+              className="self-start py-4 px-8 bg-volta-ink text-white rounded-[10px] font-heading font-medium text-[14px] hover:opacity-90 transition-opacity cursor-pointer"
+            >
+              Send message
+            </button>
+          </form>
         </div>
-      </section>
 
-      {/* Dealer Locator CTA */}
-      <section className="relative bg-kinetic-blue overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('/images/dealer-bg.jpg')] bg-cover bg-center" />
-        <div className="relative max-w-[1280px] mx-auto px-8 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="font-heading font-bold text-4xl lg:text-5xl text-white tracking-tighter uppercase leading-tight">
-              Find Your Local<br />
-              <span className="text-kinetic-green-light italic">Performance Lab</span>
-            </h2>
-            <p className="mt-4 text-kinetic-blue-pale text-base max-w-md">
-              Experience the Kinetic range in person. Our authorized dealers provide professional
-              stringing services and expert consultation tailored to your playing style.
-            </p>
-            <div className="flex gap-4 mt-8">
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-kinetic-green text-white font-heading font-bold text-sm tracking-[1px] uppercase rounded hover:bg-kinetic-green/90 transition-colors">
-                <MapPin size={14} /> Dealer Locator
-              </button>
-              <button className="inline-flex items-center px-6 py-3 font-heading font-bold text-sm text-white tracking-[1px] uppercase border border-white/20 rounded hover:bg-white/10 transition-colors">
-                Partnership Inquiry
-              </button>
-            </div>
-          </div>
-          <div className="hidden lg:block">
-            <div className="bg-kinetic-blue-dark/50 backdrop-blur-sm rounded-lg p-8 border border-white/10">
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-heading font-bold text-xs text-kinetic-green-light tracking-[1px] uppercase">Kinetic Certified</p>
-                <span className="font-sans text-xs text-white/50 uppercase tracking-wider">Authorized Network</span>
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-white/60 text-sm font-sans">Global Locations</span>
-                  <span className="font-heading font-bold text-kinetic-green-light text-lg">1,240+</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/60 text-sm font-sans">Certified Technicians</span>
-                  <span className="font-heading font-bold text-kinetic-green-light text-lg">4,800+</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Self-Service / FAQ */}
-      <section className="px-8 py-20">
-        <div className="max-w-[1280px] mx-auto">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <p className="font-heading font-bold text-xs text-kinetic-green tracking-[2.4px] uppercase mb-2">
-                Self-Service Portal
+        {/* Right — Support channels */}
+        <div className="flex flex-col gap-4">
+          {channels.map((ch) => (
+            <div
+              key={ch.eyebrow}
+              className="p-7 bg-white border border-volta-line rounded-2xl hover:border-volta-ink hover:-translate-y-0.5 transition-all cursor-pointer"
+            >
+              <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-volta-accent-ink mb-2">
+                {ch.eyebrow}
               </p>
-              <h2 className="font-heading font-bold text-4xl text-kinetic-text tracking-tighter uppercase">
-                Instant Answers
-              </h2>
-            </div>
-            <Link href="/policy" className="hidden md:flex items-center gap-2 font-sans font-bold text-sm text-kinetic-blue tracking-[1px] uppercase hover:underline">
-              View Knowledge Base <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {faqItems.map((item) => (
-              <div key={item.title} className="bg-white p-8">
-                <div className="w-12 h-12 bg-kinetic-blue/10 rounded flex items-center justify-center text-kinetic-blue mb-4">
-                  {item.icon}
+              <h3 className="font-heading font-semibold text-[20px] mb-1">
+                {ch.title}
+              </h3>
+              <p className="text-volta-ink-2 text-[13px] leading-relaxed mb-4">
+                {ch.description}
+              </p>
+              <p className="font-mono text-[13px] tracking-[0.04em] text-volta-ink mb-2">
+                {ch.value}
+              </p>
+              {ch.hours && (
+                <div className="flex items-center gap-2 text-volta-ink-3 text-[12px]">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                  </span>
+                  {ch.hours}
                 </div>
-                <h3 className="font-heading font-bold text-base text-kinetic-text uppercase tracking-wide">{item.title}</h3>
-                <p className="mt-2 text-kinetic-text-muted text-sm leading-6">{item.desc}</p>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
-    </div>
-  );
+
+      {/* FAQ */}
+      <section className="border-t border-volta-line pt-16 mt-16 pb-24">
+        <p className="font-mono text-[11px] tracking-[0.12em] uppercase text-volta-accent-ink mb-4">
+          Common questions
+        </p>
+        <h2 className="font-heading font-bold text-[clamp(32px,5vw,56px)] tracking-[-0.02em] leading-[1] mb-10">
+          Quick answers
+        </h2>
+
+        <div>
+          {faqs.map((faq, i) => {
+            const isOpen = openFaq === i
+            return (
+              <div
+                key={i}
+                className="py-6 border-b border-volta-line cursor-pointer"
+                onClick={() => setOpenFaq(isOpen ? null : i)}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="font-heading font-semibold text-[18px]">
+                    {faq.question}
+                  </h3>
+                  <Plus
+                    size={20}
+                    className={`shrink-0 text-volta-ink-3 transition-transform duration-300 ${
+                      isOpen ? 'rotate-45' : ''
+                    }`}
+                  />
+                </div>
+                <div
+                  className={`grid transition-[grid-template-rows] duration-300 ${
+                    isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-volta-ink-2 text-[14px] leading-relaxed max-w-[70ch] pt-4">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+    </main>
+  )
 }
