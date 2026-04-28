@@ -35,7 +35,7 @@ const mockProduct = {
       category: 'Footwear',
       price: 165,
       slug: 'power-cushion-65-z3',
-      img: '/images/product-recommend/product_recommend1.png',
+      img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
     },
     {
       id: 2,
@@ -43,7 +43,7 @@ const mockProduct = {
       category: 'Equipment',
       price: 95,
       slug: 'pro-tournament-bag',
-      img: '/images/product-recommend/product_recommend2.png',
+      img: 'https://images.pexels.com/photos/35300321/pexels-photo-35300321.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
     },
     {
       id: 3,
@@ -51,7 +51,7 @@ const mockProduct = {
       category: 'Essentials',
       price: 42,
       slug: 'aerosensa-50',
-      img: '/images/product-recommend/product_recommend3.png',
+      img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
     },
   ],
 };

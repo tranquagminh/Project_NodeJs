@@ -16,7 +16,7 @@ const products = [
     badge: 'NEW',
     badgeStyle: 'bg-volta-accent text-volta-accent-ink',
     slug: 'vector-x1-pro',
-    image: '/images/products/product1.png',
+    image: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'pulse-800-pro',
-    image: '/images/products/product2.png',
+    image: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'arcsaber-11-pro',
-    image: '/images/products/product3.png',
+    image: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 4,
@@ -52,7 +52,7 @@ const products = [
     badge: 'BEST SELLER',
     badgeStyle: 'bg-volta-ink text-white',
     slug: 'vector-88d-pro',
-    image: '/images/products/product4.png',
+    image: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 5,
@@ -64,7 +64,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'pulse-500',
-    image: '/images/products/product5.png',
+    image: 'https://images.pexels.com/photos/35300321/pexels-photo-35300321.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'arc-7-tour',
-    image: '/images/products/product6.png',
+    image: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 7,
@@ -88,7 +88,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'vector-x3',
-    image: '/images/products/product7.png',
+    image: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
   {
     id: 8,
@@ -100,7 +100,7 @@ const products = [
     badge: null,
     badgeStyle: '',
     slug: 'pulse-600-tour',
-    image: '/images/products/product8.png',
+    image: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop',
   },
 ];
 

@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { Heart, ArrowRight } from 'lucide-react';
 
 const popularTags = [
@@ -14,93 +16,27 @@ const popularTags = [
 ];
 
 const allProducts = [
-  {
-    slug: 'vector-x1-pro',
-    name: 'Vector X1 Pro',
-    series: 'Vector Series',
-    style: 'Offensive · head-heavy',
-    price: 265,
-    tags: ['HEAD HEAVY', 'STIFF'],
-    badge: 'NEW',
-    keywords: 'vector head heavy stiff offensive 4U G5',
-  },
-  {
-    slug: 'pulse-800-pro',
-    name: 'Pulse 800 Pro',
-    series: 'Pulse Series',
-    style: 'Speed · head-light',
-    price: 240,
-    tags: ['HEAD LIGHT', 'STIFF'],
-    badge: null,
-    keywords: 'pulse head light stiff speed 4U G5',
-  },
-  {
-    slug: 'arc-11-pro',
-    name: 'Arc 11 Pro',
-    series: 'Arc Series',
-    style: 'Control · even balance',
-    price: 255,
-    tags: ['EVEN', 'STIFF'],
-    badge: null,
-    keywords: 'arc even balance control stiff 4U G5',
-  },
-  {
-    slug: 'vector-88d-pro',
-    name: 'Vector 88D Pro',
-    series: 'Vector Series',
-    style: 'Offensive · rotational',
-    price: 235,
-    tags: ['HEAD HEAVY', 'STIFF'],
-    badge: 'BEST SELLER',
-    keywords: 'vector head heavy stiff offensive rotational 4U G5',
-  },
-  {
-    slug: 'pulse-600-tour',
-    name: 'Pulse 600 Tour',
-    series: 'Pulse Series',
-    style: 'All-round · medium flex',
-    price: 195,
-    tags: ['EVEN', 'MEDIUM'],
-    badge: null,
-    keywords: 'pulse even medium flex all-round tour',
-  },
-  {
-    slug: 'arc-7-tour',
-    name: 'Arc 7 Tour',
-    series: 'Arc Series',
-    style: 'Control · head-light',
-    price: 210,
-    tags: ['HEAD LIGHT', 'MEDIUM'],
-    badge: null,
-    keywords: 'arc head light medium control tour',
-  },
-  {
-    slug: 'vector-90-ltd',
-    name: 'Vector 90 LTD',
-    series: 'Vector Series',
-    style: 'Power · extra stiff',
-    price: 310,
-    tags: ['HEAD HEAVY', 'X-STIFF'],
-    badge: 'LIMITED',
-    keywords: 'vector head heavy extra stiff power limited 3U',
-  },
-  {
-    slug: 'pulse-900-ace',
-    name: 'Pulse 900 Ace',
-    series: 'Pulse Series',
-    style: 'Speed · flexible',
-    price: 225,
-    tags: ['HEAD LIGHT', 'FLEXIBLE'],
-    badge: null,
-    keywords: 'pulse head light flexible speed ace',
-  },
+  { slug: 'vector-x1-pro', name: 'Vector X1 Pro', series: 'Vector Series', style: 'Offensive · head-heavy', price: 265, tags: ['HEAD HEAVY', 'STIFF'], badge: 'NEW', keywords: 'vector head heavy stiff offensive 4U G5', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'pulse-800-pro', name: 'Pulse 800 Pro', series: 'Pulse Series', style: 'Speed · head-light', price: 240, tags: ['HEAD LIGHT', 'STIFF'], badge: null, keywords: 'pulse head light stiff speed 4U G5', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'arc-11-pro', name: 'Arc 11 Pro', series: 'Arc Series', style: 'Control · even balance', price: 255, tags: ['EVEN', 'STIFF'], badge: null, keywords: 'arc even balance control stiff 4U G5', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'vector-88d-pro', name: 'Vector 88D Pro', series: 'Vector Series', style: 'Offensive · rotational', price: 235, tags: ['HEAD HEAVY', 'STIFF'], badge: 'BEST SELLER', keywords: 'vector head heavy stiff offensive rotational 4U G5', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'pulse-600-tour', name: 'Pulse 600 Tour', series: 'Pulse Series', style: 'All-round · medium flex', price: 195, tags: ['EVEN', 'MEDIUM'], badge: null, keywords: 'pulse even medium flex all-round tour', img: 'https://images.pexels.com/photos/35300321/pexels-photo-35300321.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'arc-7-tour', name: 'Arc 7 Tour', series: 'Arc Series', style: 'Control · head-light', price: 210, tags: ['HEAD LIGHT', 'MEDIUM'], badge: null, keywords: 'arc head light medium control tour', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'vector-90-ltd', name: 'Vector 90 LTD', series: 'Vector Series', style: 'Power · extra stiff', price: 310, tags: ['HEAD HEAVY', 'X-STIFF'], badge: 'LIMITED', keywords: 'vector head heavy extra stiff power limited 3U', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { slug: 'pulse-900-ace', name: 'Pulse 900 Ace', series: 'Pulse Series', style: 'Speed · flexible', price: 225, tags: ['HEAD LIGHT', 'FLEXIBLE'], badge: null, keywords: 'pulse head light flexible speed ace', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
 ];
 
 type SortOption = 'relevance' | 'price-asc' | 'price-desc' | 'newest';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '');
   const [sort, setSort] = useState<SortOption>('relevance');
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) setQuery(q);
+  }, [searchParams]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -249,11 +185,12 @@ export default function SearchPage() {
                   >
                     <Heart size={14} strokeWidth={1.8} />
                   </button>
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-volta-ink-4">
-                      {product.name}
-                    </span>
-                  </div>
+                  <Image
+                    src={product.img}
+                    alt={product.name}
+                    fill
+                    className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                  />
                   <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
                     <span className="flex items-center justify-center gap-2 py-3 bg-volta-ink text-white font-mono text-[10px] tracking-[0.08em] uppercase">
                       Quick View <ArrowRight size={12} />

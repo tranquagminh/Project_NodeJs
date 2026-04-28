@@ -3,6 +3,18 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+
+const PRODUCT_IMAGES: Record<string, string> = {
+  'vector-x1-pro':   'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'pulse-800-pro':   'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'arcsaber-11-pro': 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'vector-88d-pro':  'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'pulse-500':       'https://images.pexels.com/photos/35300321/pexels-photo-35300321.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'arc-7-tour':      'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'vector-x3':       'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+  'pulse-600-tour':  'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
+};
+const FALLBACK_IMAGE = 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop';
 import {
   X,
   Minus,
@@ -262,7 +274,7 @@ export default function CartPage() {
                     className="aspect-square bg-volta-bg-2 border border-volta-line rounded flex items-center justify-center overflow-hidden"
                   >
                     <Image
-                      src={`/images/products/${item.slug}.png`}
+                      src={PRODUCT_IMAGES[item.slug] ?? FALLBACK_IMAGE}
                       alt={item.name}
                       width={120}
                       height={120}

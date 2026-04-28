@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import Image from 'next/image';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, User, ShoppingBag, Menu, X, Minus, Plus, ArrowRight } from 'lucide-react';
 import { useCart } from '@/store/cart';
+import { useRouter } from 'next/navigation';
 
 const navLinks = [
   { href: '/products', label: 'Rackets' },
@@ -14,8 +16,27 @@ const navLinks = [
   { href: '/products?category=accessories', label: 'Accessories' },
 ];
 
+const popularTags = ['Vector', 'Pulse', 'Arc', 'Head-heavy', 'Stiff', '4U · G5'];
+
+const searchProducts = [
+  { slug: 'vector-x1-pro', name: 'Vector X1 Pro', series: 'Vector Series', price: 265, keywords: 'vector head heavy stiff offensive 4U G5', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'pulse-800-pro', name: 'Pulse 800 Pro', series: 'Pulse Series', price: 240, keywords: 'pulse head light stiff speed 4U G5', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'arc-11-pro', name: 'Arc 11 Pro', series: 'Arc Series', price: 255, keywords: 'arc even balance control stiff 4U G5', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'vector-88d-pro', name: 'Vector 88D Pro', series: 'Vector Series', price: 235, keywords: 'vector head heavy stiff offensive rotational 4U G5', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'pulse-500', name: 'Pulse 500', series: 'Pulse Series', price: 185, keywords: 'pulse head light medium flex all-round', img: 'https://images.pexels.com/photos/35300321/pexels-photo-35300321.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'arc-7-tour', name: 'Arc 7 Tour', series: 'Arc Series', price: 210, keywords: 'arc head light medium control tour', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'vector-90-ltd', name: 'Vector 90 LTD', series: 'Vector Series', price: 310, keywords: 'vector head heavy extra stiff power limited 3U', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+  { slug: 'pulse-900-ace', name: 'Pulse 900 Ace', series: 'Pulse Series', price: 225, keywords: 'pulse head light flexible speed ace', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop' },
+];
+
 export default function Header() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
+
   const {
     items: cartItems,
     drawerOpen: cartOpen,
@@ -26,6 +47,54 @@ export default function Header() {
     totalItems: cartItemCount,
     subtotal,
   } = useCart();
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return searchProducts
+      .filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.series.toLowerCase().includes(q) ||
+          p.keywords.toLowerCase().includes(q),
+      )
+      .slice(0, 4);
+  }, [searchQuery]);
+
+  const openSearch = () => {
+    setSearchOpen(true);
+    setSearchQuery('');
+    setTimeout(() => searchInputRef.current?.focus(), 50);
+  };
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearchQuery('');
+  };
+
+  const handleSearchSubmit = (q: string) => {
+    const term = q.trim();
+    if (!term) return;
+    closeSearch();
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
+
+  // Close on ESC, close when clicking outside
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeSearch(); };
+    const onPointer = (e: MouseEvent) => {
+      if (searchPanelRef.current && !searchPanelRef.current.contains(e.target as Node)) {
+        closeSearch();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onPointer);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onPointer);
+    };
+  }, [searchOpen]);
 
   return (
     <>
@@ -67,7 +136,11 @@ export default function Header() {
 
           {/* Right actions */}
           <div className="flex items-center justify-end gap-1.5">
-            <button className="w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors" aria-label="Search">
+            <button
+              onClick={openSearch}
+              className="w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors"
+              aria-label="Search"
+            >
               <Search size={18} strokeWidth={1.8} />
             </button>
             <Link href="/login" className="w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors" aria-label="Account">
@@ -112,7 +185,129 @@ export default function Header() {
             </nav>
           </div>
         )}
+
+        {/* Search Overlay Panel */}
+        <div
+          className={`absolute left-0 right-0 top-full border-t border-volta-line bg-volta-bg shadow-xl transition-all duration-200 ease-out overflow-hidden ${
+            searchOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+          ref={searchPanelRef}
+        >
+          <div className="max-w-[1360px] mx-auto px-8 py-6">
+            {/* Search Input Row */}
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-volta-ink-3 pointer-events-none"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M21 21l-4.5-4.5" />
+                </svg>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(searchQuery); }}
+                  placeholder="Search frames, strings, shoes…"
+                  className="w-full bg-volta-bg-2 border border-volta-line rounded-lg pl-12 pr-4 py-3.5 font-heading font-medium text-[18px] tracking-[-0.01em] text-volta-ink placeholder:text-volta-ink-4 placeholder:font-normal placeholder:text-[16px] outline-none focus:border-volta-ink focus:bg-white transition-all"
+                />
+              </div>
+              <button
+                onClick={closeSearch}
+                className="w-9 h-9 rounded-full flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors shrink-0"
+                aria-label="Close search"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Pre-type: popular tags */}
+            {!searchQuery.trim() && (
+              <div className="mt-5">
+                <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-volta-ink-3 mb-3">
+                  Popular searches
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {popularTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSearchQuery(tag)}
+                      className="px-3 py-1.5 bg-volta-bg-2 border border-volta-line rounded-sm font-mono text-[11px] tracking-[0.06em] uppercase text-volta-ink-2 hover:border-volta-ink hover:text-volta-ink transition-colors"
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Live results */}
+            {searchQuery.trim() && (
+              <div className="mt-5">
+                {searchResults.length > 0 ? (
+                  <>
+                    <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-volta-ink-3 mb-3">
+                      {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for &ldquo;{searchQuery.trim()}&rdquo;
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                      {searchResults.map((p) => (
+                        <Link
+                          key={p.slug}
+                          href={`/products/${p.slug}`}
+                          onClick={closeSearch}
+                          className="flex items-center gap-3 p-3 rounded-lg border border-volta-line bg-white hover:border-volta-ink-4 hover:shadow-sm transition-all group"
+                        >
+                          <div className="w-12 h-12 rounded bg-volta-bg-2 shrink-0 overflow-hidden">
+                            <Image
+                              src={p.img}
+                              alt={p.name}
+                              width={48}
+                              height={48}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-mono text-[9px] tracking-[0.1em] uppercase text-volta-accent-ink truncate">{p.series}</p>
+                            <p className="font-heading font-bold text-[13px] text-volta-ink leading-tight truncate">{p.name}</p>
+                            <p className="font-heading text-[12px] text-volta-ink-3">${p.price}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handleSearchSubmit(searchQuery)}
+                      className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.08em] uppercase text-volta-ink border-b border-volta-ink pb-0.5 hover:text-volta-accent-ink hover:border-volta-accent-ink transition-colors"
+                    >
+                      See all results for &ldquo;{searchQuery.trim()}&rdquo;
+                      <ArrowRight size={12} />
+                    </button>
+                  </>
+                ) : (
+                  <div className="py-6 text-center">
+                    <p className="font-heading font-bold text-[16px] text-volta-ink mb-1">No matches.</p>
+                    <p className="font-mono text-[11px] tracking-[0.06em] text-volta-ink-3">
+                      Try a different term or browse all rackets.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </header>
+
+      {/* Search backdrop */}
+      <div
+        className={`fixed inset-0 bg-[rgba(10,15,30,0.3)] z-40 transition-opacity duration-200 ${
+          searchOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={closeSearch}
+      />
 
       {/* Cart Drawer Overlay */}
       <div

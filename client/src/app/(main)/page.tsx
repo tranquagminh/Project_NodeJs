@@ -5,16 +5,16 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 const products = [
-  { id: 'x1', series: 'Vector', title: 'Vector X1 Pro', sub: 'Offensive · head-heavy', price: 265, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'NEW', accent: true, slug: 'vector-x1-pro', img: '/images/products/product1.png' },
-  { id: 'v800', series: 'Pulse', title: 'Pulse 800 Pro', sub: 'Speed · head-light', price: 240, balance: 'HEAD LIGHT', stiff: 'STIFF', slug: 'pulse-800-pro', img: '/images/products/product2.png' },
-  { id: 'a11', series: 'Arc', title: 'Arc 11 Pro', sub: 'Control · even balance', price: 255, balance: 'EVEN', stiff: 'STIFF', slug: 'arcsaber-11-pro', img: '/images/products/product3.png' },
-  { id: 'x88', series: 'Vector', title: 'Vector 88D Pro', sub: 'Offensive · rotational', price: 235, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'BEST SELLER', slug: 'astrox-88d-pro', img: '/images/products/product4.png' },
+  { id: 'x1', series: 'Vector', title: 'Vector X1 Pro', sub: 'Offensive · head-heavy', price: 265, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'NEW', accent: true, slug: 'vector-x1-pro', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { id: 'v800', series: 'Pulse', title: 'Pulse 800 Pro', sub: 'Speed · head-light', price: 240, balance: 'HEAD LIGHT', stiff: 'STIFF', slug: 'pulse-800-pro', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { id: 'a11', series: 'Arc', title: 'Arc 11 Pro', sub: 'Control · even balance', price: 255, balance: 'EVEN', stiff: 'STIFF', slug: 'arcsaber-11-pro', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
+  { id: 'x88', series: 'Vector', title: 'Vector 88D Pro', sub: 'Offensive · rotational', price: 235, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'BEST SELLER', slug: 'astrox-88d-pro', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
 ];
 
 const athletes = [
-  { name: 'Arlo Hansen', rank: 'World #4 · 2025 season', country: 'DEN · Men\'s Singles', gear: 'Plays the Vector X1 Pro · 3U G5 · 28 lbs', img: '/images/word-class/word-class1.png' },
-  { name: 'Mei Tanaka', rank: 'World #2 · 2025 season', country: 'JPN · Women\'s Singles', gear: 'Plays the Pulse 800 Pro · 4U G6 · 26 lbs', img: '/images/word-class/word-class2.png' },
-  { name: 'Ravi Kulkarni', rank: 'World #6 · 2025 season', country: 'IND · Men\'s Doubles', gear: 'Plays the Arc 11 Pro · 4U G5 · 30 lbs', img: '/images/word-class/word-class3.png' },
+  { name: 'Arlo Hansen', rank: 'World #4 · 2025 season', country: 'DEN · Men\'s Singles', gear: 'Plays the Vector X1 Pro · 3U G5 · 28 lbs', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
+  { name: 'Mei Tanaka', rank: 'World #2 · 2025 season', country: 'JPN · Women\'s Singles', gear: 'Plays the Pulse 800 Pro · 4U G6 · 26 lbs', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
+  { name: 'Ravi Kulkarni', rank: 'World #6 · 2025 season', country: 'IND · Men\'s Doubles', gear: 'Plays the Arc 11 Pro · 4U G5 · 30 lbs', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
 ];
 
 export default function HomePage() {
@@ -65,7 +65,7 @@ export default function HomePage() {
           </div>
           <div className="relative aspect-[4/5] rounded-lg bg-gradient-to-br from-volta-bg-2 to-volta-bg-3 overflow-hidden">
             <Image
-              src="/images/hero/hero-track.png"
+              src="https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=800&h=1000&fit=crop"
               alt="Vector X1 Pro Racket"
               fill
               className="object-contain p-8"
