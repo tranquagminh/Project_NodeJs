@@ -3,21 +3,23 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-
-const products = [
-  { id: 'x1', series: 'Vector', title: 'Vector X1 Pro', sub: 'Offensive · head-heavy', price: 265, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'NEW', accent: true, slug: 'vector-x1-pro', img: 'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
-  { id: 'v800', series: 'Pulse', title: 'Pulse 800 Pro', sub: 'Speed · head-light', price: 240, balance: 'HEAD LIGHT', stiff: 'STIFF', slug: 'pulse-800-pro', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
-  { id: 'a11', series: 'Arc', title: 'Arc 11 Pro', sub: 'Control · even balance', price: 255, balance: 'EVEN', stiff: 'STIFF', slug: 'arcsaber-11-pro', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
-  { id: 'x88', series: 'Vector', title: 'Vector 88D Pro', sub: 'Offensive · rotational', price: 235, balance: 'HEAD HEAVY', stiff: 'STIFF', badge: 'BEST SELLER', slug: 'astrox-88d-pro', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=400&h=440&fit=crop' },
-];
-
-const athletes = [
-  { name: 'Arlo Hansen', rank: 'World #4 · 2025 season', country: 'DEN · Men\'s Singles', gear: 'Plays the Vector X1 Pro · 3U G5 · 28 lbs', img: 'https://images.pexels.com/photos/8007421/pexels-photo-8007421.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
-  { name: 'Mei Tanaka', rank: 'World #2 · 2025 season', country: 'JPN · Women\'s Singles', gear: 'Plays the Pulse 800 Pro · 4U G6 · 26 lbs', img: 'https://images.pexels.com/photos/10544231/pexels-photo-10544231.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
-  { name: 'Ravi Kulkarni', rank: 'World #6 · 2025 season', country: 'IND · Men\'s Doubles', gear: 'Plays the Arc 11 Pro · 4U G5 · 30 lbs', img: 'https://images.pexels.com/photos/19902436/pexels-photo-19902436.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop' },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getNewArrivals } from '@/services/products';
+import { getAthletes } from '@/services/content';
+import { getProductMainImage, resolveProductImage } from '@/lib/images';
+import { playStyleLabel, flexLabel } from '@/lib/enums';
 
 export default function HomePage() {
+  const { data: newArrivals = [] } = useQuery({
+    queryKey: ['new-arrivals'],
+    queryFn: getNewArrivals,
+  });
+
+  const { data: athletes = [] } = useQuery({
+    queryKey: ['athletes'],
+    queryFn: getAthletes,
+  });
+
   return (
     <div className="bg-volta-bg">
       {/* ═══════════ HERO SECTION ═══════════ */}
@@ -106,47 +108,46 @@ export default function HomePage() {
               <h2 className="font-heading font-bold text-[clamp(28px,3.5vw,44px)] tracking-[-0.02em] leading-none mt-2">New arrivals</h2>
             </div>
             <Link href="/products" className="hidden md:inline-flex items-center gap-1.5 font-heading text-[12px] font-medium tracking-[0.08em] uppercase text-volta-ink-2 border-b border-volta-line hover:text-volta-ink hover:border-volta-ink pb-1 transition-colors">
-              View all 24
+              View all
               <ArrowRight size={12} />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {products.map((p) => (
-              <Link key={p.id} href={`/products/${p.slug}`} className="group bg-white border border-volta-line rounded-lg overflow-hidden hover:border-volta-ink-4 hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col">
-                <div className="relative aspect-[1/1.1] bg-volta-bg-2 overflow-hidden">
-                  {p.badge && (
-                    <span className={`absolute top-3 left-3 z-10 ${p.accent ? 'bg-volta-accent text-[#002812]' : 'bg-volta-ink text-white'} font-mono text-[9px] tracking-[0.12em] uppercase px-2 py-1 rounded-sm`}>
-                      {p.badge}
+            {newArrivals.slice(0, 4).map((p) => {
+              const img = getProductMainImage(p.images, p.slug);
+              const balance = playStyleLabel(p.spec?.playStyle);
+              const flex = flexLabel(p.spec?.flex);
+              const price = Number(p.salePrice ?? p.basePrice);
+              return (
+                <Link key={p.id} href={`/products/${p.slug}`} className="group bg-white border border-volta-line rounded-lg overflow-hidden hover:border-volta-ink-4 hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col">
+                  <div className="relative aspect-[1/1.1] bg-volta-bg-2 overflow-hidden">
+                    <button
+                      onClick={(e) => e.preventDefault()}
+                      className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white border border-volta-line flex items-center justify-center text-volta-ink-3 hover:text-volta-ink transition-colors"
+                      aria-label={`Save ${p.name}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.2l-1.7-1.6a5 5 0 0 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg>
+                    </button>
+                    <Image src={img} alt={p.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform duration-300" />
+                    <span className="absolute left-3 right-3 bottom-3 z-10 bg-volta-ink text-white font-heading font-medium text-[12px] tracking-[0.1em] uppercase py-3 rounded flex items-center justify-center gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
+                      Quick view <ArrowRight size={12} />
                     </span>
-                  )}
-                  {/* Wishlist button */}
-                  <button
-                    onClick={(e) => e.preventDefault()}
-                    className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white border border-volta-line flex items-center justify-center text-volta-ink-3 hover:text-volta-ink transition-colors"
-                    aria-label={`Save ${p.title}`}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.2l-1.7-1.6a5 5 0 0 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg>
-                  </button>
-                  <Image src={p.img} alt={p.title} fill className="object-contain p-4 group-hover:scale-105 transition-transform duration-300" />
-                  {/* Quick view button — slides up on hover */}
-                  <span className="absolute left-3 right-3 bottom-3 z-10 bg-volta-ink text-white font-heading font-medium text-[12px] tracking-[0.1em] uppercase py-3 rounded flex items-center justify-center gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
-                    Quick view <ArrowRight size={12} />
-                  </span>
-                </div>
-                <div className="p-4 flex flex-col gap-1.5">
-                  <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-volta-accent-ink">{p.series} Series</span>
-                  <h3 className="font-heading font-bold text-[17px] tracking-[-0.01em] text-volta-ink">{p.title}</h3>
-                  <p className="text-[13px] text-volta-ink-3">{p.sub}</p>
-                  <div className="flex justify-between items-center mt-2.5 pt-3 border-t border-volta-line-2">
-                    <span className="font-heading font-bold text-[18px] text-volta-ink">${p.price}</span>
-                    <div className="flex gap-1">
-                      <span className="font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-0.5 bg-volta-bg-2 text-volta-ink-2 rounded-sm">{p.balance}</span>
-                      <span className="font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-0.5 bg-volta-bg-2 text-volta-ink-2 rounded-sm">{p.stiff}</span>
+                  </div>
+                  <div className="p-4 flex flex-col gap-1.5">
+                    <span className="font-mono text-[10px] tracking-[0.1em] uppercase text-volta-accent-ink">{p.spec?.series ?? p.brand?.name ?? ''} Series</span>
+                    <h3 className="font-heading font-bold text-[17px] tracking-[-0.01em] text-volta-ink">{p.name}</h3>
+                    <p className="text-[13px] text-volta-ink-3">{[balance, flex].filter(Boolean).join(' · ')}</p>
+                    <div className="flex justify-between items-center mt-2.5 pt-3 border-t border-volta-line-2">
+                      <span className="font-heading font-bold text-[18px] text-volta-ink">${price}</span>
+                      <div className="flex gap-1">
+                        {balance && <span className="font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-0.5 bg-volta-bg-2 text-volta-ink-2 rounded-sm">{balance}</span>}
+                        {flex && <span className="font-mono text-[9px] tracking-[0.08em] uppercase px-1.5 py-0.5 bg-volta-bg-2 text-volta-ink-2 rounded-sm">{flex}</span>}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -225,18 +226,19 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {athletes.map((a) => (
-              <div key={a.name} className="group relative aspect-[3/4] rounded-lg overflow-hidden bg-volta-ink cursor-pointer hover:-translate-y-1 transition-transform">
-                <Image src={a.img} alt={a.name} fill className="object-cover object-top opacity-80 group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-20 translate-y-10 group-hover:translate-y-0 transition-transform">
-                  <p className="font-mono text-[10px] tracking-[0.14em] uppercase text-volta-accent">{a.rank}</p>
-                  <h3 className="font-heading font-bold text-[28px] tracking-[-0.01em] text-white mt-1">{a.name}</h3>
-                  <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/70">{a.country}</p>
-                  <div className="mt-3.5 pt-3.5 border-t border-white/20 text-[12px] text-white/80">{a.gear}</div>
+            {athletes.slice(0, 3).map((a) => {
+              const img = resolveProductImage(a.image, a.name, 'w=600&h=800');
+              return (
+                <div key={a.id} className="group relative aspect-[3/4] rounded-lg overflow-hidden bg-volta-ink cursor-pointer hover:-translate-y-1 transition-transform">
+                  <Image src={img} alt={a.name} fill className="object-cover object-top opacity-80 group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 z-20 translate-y-10 group-hover:translate-y-0 transition-transform">
+                    <h3 className="font-heading font-bold text-[28px] tracking-[-0.01em] text-white mt-1">{a.name}</h3>
+                    {a.title && <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-white/70">{a.title}</p>}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

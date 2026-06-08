@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, User, ShoppingBag, Menu, X, Minus, Plus, ArrowRight } from 'lucide-react';
 import { useCart } from '@/store/cart';
+import { useAuth } from '@/store/auth';
 import { useRouter } from 'next/navigation';
 
 const navLinks = [
@@ -37,6 +38,10 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchPanelRef = useRef<HTMLDivElement>(null);
 
+  const { user, logout } = useAuth();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
   const {
     items: cartItems,
     drawerOpen: cartOpen,
@@ -47,6 +52,16 @@ export default function Header() {
     totalItems: cartItemCount,
     subtotal,
   } = useCart();
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const searchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -143,9 +158,48 @@ export default function Header() {
             >
               <Search size={18} strokeWidth={1.8} />
             </button>
-            <Link href="/login" className="w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors" aria-label="Account">
-              <User size={18} strokeWidth={1.8} />
-            </Link>
+            {/* User menu */}
+            <div className="relative" ref={userMenuRef}>
+              {user ? (
+                <>
+                  <button
+                    onClick={() => setUserMenuOpen((v) => !v)}
+                    className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-volta-accent text-[#002812] font-heading font-bold text-[13px] hover:opacity-90 transition-opacity"
+                    aria-label="Account menu"
+                  >
+                    {user.fullName.charAt(0).toUpperCase()}
+                  </button>
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-volta-line rounded-xl shadow-lg py-1.5 z-50">
+                      <div className="px-4 py-2 border-b border-volta-line mb-1">
+                        <p className="font-heading font-semibold text-[13px] text-volta-ink truncate">{user.fullName}</p>
+                        <p className="text-[11px] text-volta-ink-3 truncate">{user.email}</p>
+                      </div>
+                      {(user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') && (
+                        <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-[13px] text-volta-accent-ink font-medium hover:bg-volta-accent-soft transition-colors">
+                          ⚙ Admin Panel
+                        </Link>
+                      )}
+                      <Link href="/account" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-[13px] text-volta-ink hover:bg-volta-bg transition-colors">My account</Link>
+                      <Link href="/account/orders" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-[13px] text-volta-ink hover:bg-volta-bg transition-colors">Orders</Link>
+                      <Link href="/account/wishlist" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-[13px] text-volta-ink hover:bg-volta-bg transition-colors">Wishlist</Link>
+                      <div className="border-t border-volta-line mt-1 pt-1">
+                        <button
+                          onClick={() => { logout(); setUserMenuOpen(false); router.push('/'); }}
+                          className="w-full text-left px-4 py-2 text-[13px] text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link href="/login" className="w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors" aria-label="Account">
+                  <User size={18} strokeWidth={1.8} />
+                </Link>
+              )}
+            </div>
             <button
               onClick={setCartOpenTrue}
               className="relative w-9 h-9 rounded-full inline-flex items-center justify-center text-volta-ink-2 hover:bg-volta-bg-3 hover:text-volta-ink transition-colors"

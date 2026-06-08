@@ -23,4 +23,27 @@ export const env = {
   // Client
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:3000',
   ADMIN_URL: process.env.ADMIN_URL || 'http://localhost:3001',
+
+  // VNPay
+  VNPAY_TMN_CODE: process.env.VNPAY_TMN_CODE || '',
+  VNPAY_HASH_SECRET: process.env.VNPAY_HASH_SECRET || '',
+  VNPAY_URL: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+  VNPAY_RETURN_URL: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/return/vnpay',
+  VNPAY_IPN_URL: process.env.VNPAY_IPN_URL || 'http://localhost:5001/api/payment/webhook/vnpay',
+
+  // MoMo
+  MOMO_PARTNER_CODE: process.env.MOMO_PARTNER_CODE || '',
+  MOMO_ACCESS_KEY: process.env.MOMO_ACCESS_KEY || '',
+  MOMO_SECRET_KEY: process.env.MOMO_SECRET_KEY || '',
+  MOMO_API_URL: process.env.MOMO_API_URL || 'https://test-payment.momo.vn',
+  MOMO_RETURN_URL: process.env.MOMO_RETURN_URL || 'http://localhost:3000/payment/return/momo',
+  MOMO_NOTIFY_URL: process.env.MOMO_NOTIFY_URL || 'http://localhost:5001/api/payment/webhook/momo',
+
+  // Payment
+  PAYMENT_MOCK_MODE: process.env.PAYMENT_MOCK_MODE === 'true',
+
+  // Bank transfer
+  BANK_ACCOUNT_NUMBER: process.env.BANK_ACCOUNT_NUMBER || '0123456789',
+  BANK_ACCOUNT_HOLDER: process.env.BANK_ACCOUNT_HOLDER || 'VOLTA SPORTS',
+  BANK_NAME: process.env.BANK_NAME || 'VietcomBank',
 } as const;

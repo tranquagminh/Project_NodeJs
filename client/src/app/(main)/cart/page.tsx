@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { verifyCoupon, type CouponResult } from '@/services/coupons';
 
 const PRODUCT_IMAGES: Record<string, string> = {
   'vector-x1-pro':   'https://images.pexels.com/photos/8007173/pexels-photo-8007173.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop',
@@ -26,6 +27,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Heart,
+  Tag,
 } from 'lucide-react';
 import { useCart } from '@/store/cart';
 
@@ -132,10 +134,30 @@ function ProductCard({
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, subtotal } = useCart();
   const [promoCode, setPromoCode] = useState('');
+  const [coupon, setCoupon] = useState<CouponResult | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
 
+  const discount = coupon?.discountAmount ?? 0;
   const taxRate = 0.08;
-  const tax = +(subtotal * taxRate).toFixed(2);
-  const total = subtotal + tax;
+  const tax = +((subtotal - discount) * taxRate).toFixed(2);
+  const total = subtotal - discount + tax;
+
+  const handleApplyCoupon = async () => {
+    if (!promoCode.trim()) return;
+    setCouponError('');
+    setCouponLoading(true);
+    try {
+      const result = await verifyCoupon(promoCode.trim().toUpperCase(), subtotal);
+      setCoupon(result);
+      setPromoCode('');
+    } catch (err: any) {
+      setCouponError(err?.response?.data?.message || 'Invalid or expired coupon code.');
+      setCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   /* ============ EMPTY STATE ============ */
   if (items.length === 0) {
@@ -379,18 +401,45 @@ export default function CartPage() {
             </div>
 
             {/* Promo code */}
-            <div className="flex gap-2 mt-4">
-              <input
-                type="text"
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
-                placeholder="Promo code"
-                className="flex-1 min-w-0 bg-volta-bg-2 border border-volta-line rounded px-3 py-2 text-[13px] text-volta-ink placeholder:text-volta-ink-4 outline-none focus:border-volta-ink transition-colors"
-              />
-              <button className="bg-volta-ink text-white font-mono text-[10px] tracking-[0.08em] uppercase px-4 rounded hover:bg-volta-ink-2 transition-colors">
-                Apply
-              </button>
-            </div>
+            {coupon ? (
+              <div className="mt-4 flex items-center justify-between bg-volta-accent/10 border border-volta-accent/30 rounded px-3 py-2.5">
+                <div className="flex items-center gap-2 text-volta-accent-ink text-[13px]">
+                  <Tag size={14} />
+                  <span className="font-medium">{coupon.code}</span>
+                  <span className="text-volta-ink-3">— ${discount.toFixed(2)} off</span>
+                </div>
+                <button onClick={() => setCoupon(null)} className="text-volta-ink-3 hover:text-volta-ink transition-colors">
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
+                    placeholder="Promo code"
+                    className="flex-1 min-w-0 bg-volta-bg-2 border border-volta-line rounded px-3 py-2 text-[13px] text-volta-ink placeholder:text-volta-ink-4 outline-none focus:border-volta-ink transition-colors"
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading || !promoCode.trim()}
+                    className="bg-volta-ink text-white font-mono text-[10px] tracking-[0.08em] uppercase px-4 rounded hover:bg-volta-ink-2 transition-colors disabled:opacity-50"
+                  >
+                    {couponLoading ? '…' : 'Apply'}
+                  </button>
+                </div>
+                {couponError && <p className="text-red-600 text-[11px] mt-1.5">{couponError}</p>}
+              </div>
+            )}
+            {discount > 0 && (
+              <div className="flex justify-between text-[13px] text-volta-accent-ink py-1.5">
+                <span>Discount</span>
+                <span>−${discount.toFixed(2)}</span>
+              </div>
+            )}
 
             <div className="flex justify-between font-heading font-bold text-[22px] border-t border-volta-line pt-4 mt-4 text-volta-ink">
               <span>Total</span>

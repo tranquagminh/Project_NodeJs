@@ -39,3 +39,19 @@ export class ConflictError extends AppError {
     super(message, 409);
   }
 }
+
+/**
+ * Thrown when a domain/business rule is violated.
+ * Carries a machine-readable `ruleCode` used by the client to render
+ * a localised message (e.g. MAX_TENSION_EXCEEDED).
+ */
+export class BusinessRuleError extends AppError {
+  public ruleCode: string;
+  public details: Record<string, unknown>;
+
+  constructor(message: string, ruleCode: string, details: Record<string, unknown> = {}) {
+    super(message, 422);
+    this.ruleCode = ruleCode;
+    this.details = details;
+  }
+}

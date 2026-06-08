@@ -28,7 +28,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "eslint": "^9.39.4",
     "prettier": "^3.8.1"
+  },
+  "dependencies": {
+    "@types/node-cron": "^3.0.11",
+    "node-cron": "^4.2.1"
   }
 }

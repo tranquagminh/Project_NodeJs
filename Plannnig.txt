@@ -1,10 +1,10 @@
 🚀 Kế Hoạch Phát Triển Dự Án E-Commerce Toàn Diện
 
 ═══════════════════════════════════════════════════════════
-🏸 DOMAIN: KINETIC — Badminton & Racket Sports E-Commerce
+🏸 DOMAIN: VOLTA — Badminton & Racket Sports E-Commerce
 ═══════════════════════════════════════════════════════════
 
-Brand Name: KINETIC
+Brand Name: VOLTA
 Tagline: "High Performance Engineered for the Elite Athlete. Precision in Every Frame."
 Niche: Badminton equipment & gear (rackets, shoes, apparel, shuttlecocks, strings, accessories)
 
@@ -169,7 +169,7 @@ Seed Categories:
 -- ==================== BRAND ====================
 Brand
 ├── id (UUID, PK)
-├── name                     -- e.g., "KINETIC", "YONEX", "Mizuno", "Babolat"
+├── name                     -- e.g., "VOLTA", "YONEX", "Mizuno", "Babolat"
 ├── slug (unique)
 ├── logo
 ├── description
@@ -361,7 +361,7 @@ Banner
 ├── createdAt
 └── updatedAt
 
--- ==================== ATHLETE / TEAM (from "Team Kinetic" section) ====================
+-- ==================== ATHLETE / TEAM (from "Team VOLTA" section) ====================
 Athlete
 ├── id (UUID, PK)
 ├── name                     -- e.g., "Viktor Axelsen", "An Se-Young", "Kento Momota"
@@ -473,7 +473,7 @@ SPRINT 2 (Tuần 3): Product & Category & Brand + Badminton Specs
 □ POST   /api/admin/products/:id/images (upload)
 □ CRUD   /api/admin/products/:id/variants
 □ CRUD   /api/admin/products/:id/specs (badminton-specific specs)
-□ CRUD   /api/admin/athletes (Team Kinetic)
+□ CRUD   /api/admin/athletes (Team VOLTA)
 □ GET    /api/athletes (public)
 □ CRUD   /api/admin/technologies (Engineered to Dominate)
 □ GET    /api/technologies (public)
@@ -552,12 +552,12 @@ text
 SPRINT 5 (Tuần 4-5): Core Pages — FROM FIGMA DESIGNS
 ─────────────────────────────────────────────────────
 □ Layout chung (Header, Footer)
-│  ├── Header: KINETIC Logo, Nav (Rackets|Shoes|Apparel|Shuttlecocks|Strings|Accessories)
+│  ├── Header: VOLTA Logo, Nav (Rackets|Shoes|Apparel|Shuttlecocks|Strings|Accessories)
 │  ├── Search bar (Search Performance...)
 │  ├── User icon, Cart icon with badge
-│  └── Footer: KINETIC branding, Support links, Company links, Newsletter signup
+│  └── Footer: VOLTA branding, Support links, Company links, Newsletter signup
 │             "High Performance Engineered for the Elite Athlete."
-│             Social icons, © 2024 KINETIC PERFORMANCE, GLOBAL SHIPPING ACTIVE
+│             Social icons, © 2024 VOLTA PERFORMANCE, GLOBAL SHIPPING ACTIVE
 │
 □ Trang chủ (/) — FIGMA node 1:386
 │  ├── Hero Banner: Full-width dark blue bg, product image, product name (ASTROX 100 ZZ)
@@ -572,13 +572,13 @@ SPRINT 5 (Tuần 4-5): Core Pages — FROM FIGMA DESIGNS
 │  │   ├── Power Cushion+ technology with stat "62% Energy Return"
 │  │   ├── Rotational Generator System with stat "28% More Racket Turnover"
 │  │   └── Product/tech images grid
-│  ├── TEAM KINETIC section
+│  ├── TEAM VOLTA section
 │  │   ├── "Powered by Champions" subtitle
 │  │   └── Athlete cards: Viktor Axelsen, An Se-Young, Kento Momota (with name overlay)
 │  ├── TECHNICAL BLUEPRINT section (dark bg)
 │  │   ├── Racket configurator/specs: Flex, String, Grip, Bracket Cost, Weight info
 │  │   └── "CONFIGURE YOUR RACKET" CTA
-│  └── Footer with KINETIC PERFORMANCE newsletter ("ENTER EMAIL" + arrow button)
+│  └── Footer with VOLTA PERFORMANCE newsletter ("ENTER EMAIL" + arrow button)
 │
 □ Trang danh sách sản phẩm (/products, /rackets, etc.) — FIGMA node 1:3
 │  ├── Category Hero banner: dark gradient bg, "ENGINEERED FOR PRECISION"
@@ -708,13 +708,13 @@ components/
 │
 ├── layout/
 │   ├── Header/
-│   │   ├── Logo.tsx         # KINETIC logo (green text)
+│   │   ├── Logo.tsx         # VOLTA logo (green text)
 │   │   ├── NavLinks.tsx     # Rackets|Shoes|Apparel|Shuttlecocks|Strings|Accessories
 │   │   ├── SearchBar.tsx    # "Search Performance..." with icon
 │   │   ├── CartIcon.tsx     # Cart with item count badge
 │   │   └── UserMenu.tsx     # User avatar icon
 │   ├── Footer/
-│   │   ├── FooterBrand.tsx  # KINETIC logo + tagline
+│   │   ├── FooterBrand.tsx  # VOLTA logo + tagline
 │   │   ├── FooterLinks.tsx  # Support, Tech, Company columns
 │   │   ├── FooterNewsletter.tsx  # "ENTER EMAIL" + arrow submit
 │   │   └── FooterBottom.tsx # Copyright + social icons + Global Shipping Active
@@ -749,9 +749,9 @@ components/
 │   ├── HeroBanner.tsx       # Full-width dark blue hero with product + CTAs
 │   ├── NewArrivals.tsx      # Featured product + grid + Tournament Gear
 │   ├── EngineeredSection.tsx # "Engineered to Dominate" tech showcase
-│   ├── TeamKinetic.tsx      # Athlete cards with name overlay
+│   ├── TeamVolta.tsx        # Athlete cards with name overlay
 │   ├── TechBlueprint.tsx    # Racket configurator/specs section
-│   └── Newsletter.tsx       # "KINETIC NEWSLETTER" email signup
+│   └── Newsletter.tsx       # "VOLTA NEWSLETTER" email signup
 │
 └── review/
     ├── ReviewList.tsx
@@ -812,7 +812,7 @@ SPRINT 11 (Tuần 9-10): Marketing & Settings & Badminton CMS
 │  ├── CRUD banner (HOME_HERO / HOME_BANNER / CATEGORY_HERO)
 │  └── Preview
 │
-□ Quản lý Athletes (/admin/athletes) — NEW (Team Kinetic section)
+□ Quản lý Athletes (/admin/athletes) — NEW (Team VOLTA section)
 │  ├── CRUD athlete (name, title, image)
 │  └── Sort order
 │
@@ -821,7 +821,7 @@ SPRINT 11 (Tuần 9-10): Marketing & Settings & Badminton CMS
 │  └── Link technologies to products
 │
 □ Cài đặt (/admin/settings)
-│  ├── Thông tin cửa hàng (KINETIC branding)
+│  ├── Thông tin cửa hàng (VOLTA branding)
 │  ├── Cấu hình thanh toán
 │  ├── Cấu hình vận chuyển (Standard Delivery / Express Velocity)
 │  └── Email templates

@@ -1,111 +1,276 @@
+/* ── VOLTA Design Tokens ────────────────────────────────────────── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --ink:          #1a2844;   /* Primary dark navy */
+  --ink-2:        #2a3a62;   /* Hover / active */
+  --ink-3:        #6b7a9e;   /* Muted text */
+  --ink-4:        #a8b0c8;   /* Placeholder / disabled */
+  --line:         #e2e4ec;   /* Border */
+  --line-2:       #edeef6;   /* Subtle border */
+  --bg:           #f7f6f3;   /* Page background */
+  --bg-2:         #f0efe9;   /* Hover row / subtle section */
+  --surface:      #ffffff;   /* Card / panel surface */
+  --accent:       #3a9456;   /* Green accent */
+  --accent-soft:  #eaf5ee;   /* Green tint background */
+  --signal:       #d4891a;   /* Warning amber */
+  --danger:       #d94f3d;   /* Error red */
+  --sidebar:      #1a2844;   /* Sidebar background */
+  --header:       #1a2844;   /* Header background */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
+/* ── Reset & Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+#root {
+  width: 100%;
+  min-height: 100vh;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+h1, h2, h3, h4, h5 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ── Login page ──────────────────────────────────────────────────── */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(58,148,86,0.15) 0%, transparent 70%);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.login-card {
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  border-radius: 6px !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.32) !important;
+  padding: 12px 8px;
 }
+
+.login-logo-mark {
+  width: 40px;
+  height: 40px;
+  background: var(--ink);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  border-radius: 4px;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.sidebar-logo {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 4px;
+}
+
+.sidebar-logo-brand {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+}
+
+.sidebar-logo-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Collapsed sidebar: hide text marks */
+.ant-layout-sider-collapsed .sidebar-logo-label,
+.ant-layout-sider-collapsed .sidebar-footer { display: none; }
+.ant-layout-sider-collapsed .sidebar-logo-brand { font-size: 13px; text-align: center; }
+.ant-layout-sider-collapsed .sidebar-logo { padding: 18px 10px; text-align: center; }
+
+/* Sider trigger (collapse button) */
+.ant-layout-sider-trigger {
+  background: rgba(255,255,255,0.06) !important;
+  color: rgba(255,255,255,0.45) !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+}
+.ant-layout-sider-trigger:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.app-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* ── Page headings ───────────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h4.ant-typography {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+
+/* ── Stat cards ──────────────────────────────────────────────────── */
+.stat-card.ant-card {
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.stat-card.ant-card:hover {
+  border-color: var(--ink-3) !important;
+  box-shadow: 0 2px 12px rgba(26,40,68,0.07) !important;
+}
+
+.stat-card .ant-statistic-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-3);
+}
+
+.stat-card .ant-statistic-content {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* ── Table ───────────────────────────────────────────────────────── */
+.ant-table-wrapper {
+  overflow-x: auto;
+}
+
+.ant-table-thead > tr > th {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-3) !important;
+}
+
+/* ── Cards (content panels) ─────────────────────────────────────── */
+.ant-card {
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--line) !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  min-height: 48px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.ant-btn-primary {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ant-btn-primary:hover {
+  background: var(--ink-2) !important;
+  border-color: var(--ink-2) !important;
+}
+
+.ant-btn-primary.ant-btn-dangerous {
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+/* ── Tags / Status badges ────────────────────────────────────────── */
+.ant-tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 3px;
+}
+
+/* ── Form controls ───────────────────────────────────────────────── */
+.ant-input:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--ink) !important;
+  box-shadow: 0 0 0 2px rgba(26,40,68,0.08) !important;
+}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.ant-modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ── Ant Design overrides for dark menu ─────────────────────────── */
+.ant-menu-dark.ant-menu-inline .ant-menu-item {
+  border-radius: 4px;
+  margin-inline: 8px;
+  width: calc(100% - 16px);
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: var(--ink-2) !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }

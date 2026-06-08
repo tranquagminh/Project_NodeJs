@@ -11,12 +11,14 @@ export interface CartAttr {
 
 export interface CartItem {
   id: string;
+  productId: string;
   name: string;
   series: string;
   slug: string;
   price: number;
   quantity: number;
   attrs: CartAttr[];
+  image?: string;
 }
 
 interface CartContext {
